@@ -1,4 +1,5 @@
 Class = require "utils/Class"
+Board = require "Board"
 WIDTH = 960
 HEIGHT = 960
 
@@ -9,6 +10,10 @@ end
 
 function love.update(dt)
 
+end
+
+function love.draw()
+    CreateGraphicalBoard()
 end
 
 function love.keypressed(key)
