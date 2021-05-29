@@ -43,15 +43,6 @@ function Board:DisplayPieces()
 
 end
 
-function SquareToCordinate(square)
-    square = square - 1
-    local rank = 7 - bit.rshift(square, 3)
-    -- local file = square % 7
-    local file = bit.band(square, 7)
-    local placeX = file * Loader.pieceSize
-    local placeY = rank * Loader.pieceSize
-    return placeX, placeY
-end
 
 function Board:LoadStartPosition()
     Board:LoadPosition(startFen)

@@ -2,6 +2,7 @@ Class = require "utils/Class"
 board = require "board"
 piece = require "Piece"
 loader = require 'loader'
+require 'BoardRepresentation'
 require 'FenUtility'
 bit = require "bit"
 WIDTH = 960

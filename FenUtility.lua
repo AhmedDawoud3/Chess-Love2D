@@ -6,7 +6,6 @@ pieceTypeFromSymbol = {
     ['r'] = Piece().Rook,
     ['q'] = Piece().Queen
 }
-print(Piece().Rook)
 
 startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
