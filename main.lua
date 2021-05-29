@@ -4,7 +4,9 @@ require "Piece"
 require 'loader'
 require "gameManager"
 require 'BoardRepresentation'
+require 'Player'
 require 'FenUtility'
+require 'BoardUI'
 bit = require "bit"
 WIDTH = 960
 HEIGHT = 960
@@ -15,6 +17,7 @@ function love.load()
 end
 
 function love.update(dt)
+    GameManager:Update(dt)
 end
 
 function love.draw()

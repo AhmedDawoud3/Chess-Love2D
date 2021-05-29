@@ -17,7 +17,7 @@ function FileIndex(squareIndex)
 end
 
 function IndexFromCoord(fileIndex, rankIndex)
-    return rankIndex * 8 + fileIndex - 1
+    return rankIndex * 8 + fileIndex + 1
 end
 
 function LightSquare(fileIndex, rankIndex)

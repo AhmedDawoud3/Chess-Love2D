@@ -26,23 +26,26 @@ Board = Class {}
 function Board:init()
     self.Square = {}
     for i = 1, 64 do
-        self.Square[i] = 0
+        self.Square[i] = {0, 0, false}
     end
 end
 
 function Board:DisplayPieces()
     for i, v in ipairs(self.Square) do
-        if v ~= 0 then
-            local p = Loader:GetPiece(v)
-            if p ~= nil then
+        if v[1] ~= 0 then
+            local p = Loader:GetPiece(v[1])
+            if p ~= nil and v[2] then
                 x, y = SquareToCordinate(i)
                 love.graphics.draw(Loader.piecesTexture, p, x, y)
             end
         end
     end
+    if floatingPiece then
+        love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(floatingPiece[1]), floatingPiece[2][1] - 60,
+            floatingPiece[2][2] - 60)
+    end
 
 end
-
 
 function Board:LoadStartPosition()
     Board:LoadPosition(startFen)
@@ -53,6 +56,7 @@ function Board:LoadPosition(fen)
 
     for squareIndex = 1, 64 do
         piece = loadedPosition.squares[squareIndex]
-        self.Square[squareIndex] = piece
+        self.Square[squareIndex][1] = piece
+        self.Square[squareIndex][2] = true
     end
 end
