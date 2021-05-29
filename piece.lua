@@ -6,7 +6,7 @@ function Piece:init()
     self.Pawn = 2
     self.Knight = 3
     self.Bishop = 4
-    self.Rock = 5
+    self.Rook = 5
     self.Queen = 6
 
     self.White = 8

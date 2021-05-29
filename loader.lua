@@ -11,8 +11,8 @@ function Loader:init()
         {bit.bor(Piece().Black, Piece().Bishop),love.graphics.newQuad(self.pieceSize * 2, self.pieceSize * 1, self.pieceSize, self.pieceSize, self.piecesTexture)},
         {bit.bor(Piece().White, Piece().Knight),love.graphics.newQuad(self.pieceSize * 3, self.pieceSize * 0, self.pieceSize, self.pieceSize, self.piecesTexture)}, 
         {bit.bor(Piece().Black, Piece().Knight),love.graphics.newQuad(self.pieceSize * 3, self.pieceSize * 1, self.pieceSize, self.pieceSize, self.piecesTexture)}, 
-        {bit.bor(Piece().White, Piece().Rock),love.graphics.newQuad(self.pieceSize * 4, self.pieceSize * 0, self.pieceSize, self.pieceSize, self.piecesTexture)}, 
-        {bit.bor(Piece().Black, Piece().Rock),love.graphics.newQuad(self.pieceSize * 4, self.pieceSize * 1, self.pieceSize, self.pieceSize, self.piecesTexture)}, 
+        {bit.bor(Piece().White, Piece().Rook),love.graphics.newQuad(self.pieceSize * 4, self.pieceSize * 0, self.pieceSize, self.pieceSize, self.piecesTexture)}, 
+        {bit.bor(Piece().Black, Piece().Rook),love.graphics.newQuad(self.pieceSize * 4, self.pieceSize * 1, self.pieceSize, self.pieceSize, self.piecesTexture)}, 
         {bit.bor(Piece().White, Piece().Pawn),love.graphics.newQuad(self.pieceSize * 5, self.pieceSize * 0, self.pieceSize, self.pieceSize, self.piecesTexture)}, 
         {bit.bor(Piece().Black, Piece().Pawn),love.graphics.newQuad(self.pieceSize * 5, self.pieceSize * 1, self.pieceSize, self.pieceSize, self.piecesTexture)}
     }
