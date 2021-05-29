@@ -2,6 +2,7 @@ Class = require "utils/Class"
 board = require "board"
 piece = require "Piece"
 loader = require 'loader'
+require "gameManager"
 require 'BoardRepresentation'
 require 'FenUtility'
 bit = require "bit"
@@ -10,17 +11,14 @@ HEIGHT = 960
 function love.load()
     love.window.setMode(WIDTH, HEIGHT)
     love.window.setTitle("Chess")
-    Loader = Loader()
-    Board = Board()
-    Board:LoadStartPosition()
+    GameManager = GameManager()
 end
 
 function love.update(dt)
 end
 
 function love.draw()
-    CreateGraphicalBoard()
-    Board:DisplayPieces()
+    GameManager:Render()
 end
 
 function love.keypressed(key)

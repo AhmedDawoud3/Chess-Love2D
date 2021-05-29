@@ -3,7 +3,6 @@ function SquareToCordinate(square)
     -- local file = square % 7
     local file = FileIndex(square)
     local rank = RankIndex(square)
-    print(file)
     local placeX = file * Loader.pieceSize
     local placeY = rank * Loader.pieceSize
     return placeX, placeY
