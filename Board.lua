@@ -28,9 +28,6 @@ function Board:init()
     for i = 1, 64 do
         self.Square[i] = 0
     end
-    self.Square[1] = bit.bor(Piece().White, Piece().King)
-    self.Square[64] = bit.bor(Piece().White, Piece().Rock)
-    self.Square[58] = bit.bor(Piece().Black, Piece().Knight)
 end
 
 function Board:DisplayPieces()
@@ -54,4 +51,17 @@ function SquareToCordinate(square)
     local placeX = file * Loader.pieceSize
     local placeY = rank * Loader.pieceSize
     return placeX, placeY
+end
+
+function Board:LoadStartPosition()
+    Board:LoadPosition(startFen)
+end
+
+function Board:LoadPosition(fen)
+    loadedPosition = PositionFromFen(fen)
+
+    for squareIndex = 1, 64 do
+        piece = loadedPosition.squares[squareIndex]
+        self.Square[squareIndex] = piece
+    end
 end
