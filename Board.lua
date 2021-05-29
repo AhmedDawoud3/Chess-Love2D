@@ -4,6 +4,7 @@ WIDTH = 960
 HEIGHT = 960
 squareTileWidth = WIDTH / 8
 squareTileHeight = HEIGHT / 8
+
 function CreateGraphicalBoard()
     for file = 0, 8 do
         for rank = 0, 8 do
@@ -11,6 +12,7 @@ function CreateGraphicalBoard()
             squareColour = (isLightSquare and darkCol) or lightCol
             position = {file, rank}
             DrawSquare(squareColour, position)
+            love.graphics.setColor(1, 1, 1, 1)
         end
     end
 end
@@ -19,4 +21,37 @@ function DrawSquare(col, pos)
     love.graphics.setColor(col[1], col[2], col[3], col[4])
     love.graphics.rectangle("fill", pos[1] * squareTileWidth, pos[2] * squareTileHeight, squareTileWidth,
         squareTileHeight)
+end
+Board = Class {}
+function Board:init()
+    self.Square = {}
+    for i = 1, 64 do
+        self.Square[i] = 0
+    end
+    self.Square[1] = bit.bor(Piece().White, Piece().King)
+    self.Square[64] = bit.bor(Piece().White, Piece().Rock)
+    self.Square[58] = bit.bor(Piece().Black, Piece().Knight)
+end
+
+function Board:DisplayPieces()
+    for i, v in ipairs(self.Square) do
+        if v ~= 0 then
+            local p = Loader:GetPiece(v)
+            if p ~= nil then
+                x, y = SquareToCordinate(i)
+                love.graphics.draw(Loader.piecesTexture, p, x, y)
+            end
+        end
+    end
+
+end
+
+function SquareToCordinate(square)
+    square = square - 1
+    local rank = 7 - bit.rshift(square, 3)
+    -- local file = square % 7
+    local file = bit.band(square, 7)
+    local placeX = file * Loader.pieceSize
+    local placeY = rank * Loader.pieceSize
+    return placeX, placeY
 end
