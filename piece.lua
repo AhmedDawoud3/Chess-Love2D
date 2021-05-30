@@ -45,3 +45,10 @@ function IsPiece(squareIndex)
     end
     return false
 end
+
+function Piece.ReverseColor(color)
+    if color == Piece().White then
+        return Piece().Black
+    end
+    return Piece().White
+end
