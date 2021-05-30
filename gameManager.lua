@@ -2,7 +2,8 @@ GameManager = Class {}
 
 audio = {
     ["normal"] = love.audio.newSource('audio/normal.wav', "static"),
-    ["capture"] = love.audio.newSource('audio/capture.wav', "static")
+    ["capture"] = love.audio.newSource('audio/capture.wav', "static"),
+    ["enPassant"] = love.audio.newSource('audio/enPassant.wav', "static")
 }
 
 function GameManager:init()

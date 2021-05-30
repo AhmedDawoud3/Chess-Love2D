@@ -57,6 +57,20 @@ function TryMakeMove(startSquare, targetSquare)
                     audio["normal"]:play()
                 end
 
+                -- Handling En Passant
+                if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn and RankIndex(targetSquare) -
+                    RankIndex(startSquare) == 2 then
+                    Game.epFile = FileIndex(targetSquare)
+                else
+                    Game.epFile = nil
+                end
+                if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn then
+                    if Board.Square[targetSquare][1] == 0  and FileIndex(targetSquare) ~= FileIndex(startSquare) then
+                        Board.Square[targetSquare - 8] = {0, false, false}
+                        audio["enPassant"]:play()
+                    end
+                end
+
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
                     -- Set Castling to false
                     if Piece().IsColor(Board.Square[startSquare][1], Piece().White) then
