@@ -57,24 +57,36 @@ function TryMakeMove(startSquare, targetSquare)
                     audio["normal"]:play()
                 end
 
-                -- Left Castling
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
+                    -- Set Castling to false
+                    if Piece().IsColor(Board.Square[startSquare][1], Piece().White) then
+                        Game.wqcstl = false
+                        Game.wkcstl = false
+                    end
+                    if Piece().IsColor(Board.Square[startSquare][1], Piece().Black) then
+                        Game.bqcstl = false
+                        Game.bkcstl = false
+                    end
+
+                    -- Left Castling
                     if (startSquare - targetSquare) > 1 then
                         if Piece.PieceType(Board.Square[startSquare - 4][1]) == Piece().Rook and
                             not Board.Square[startSquare - 4][3] and not Board.Square[startSquare][3] then
-                            Board.Square[startSquare - 1] = Board.Square[startSquare - 4]
-                            Board.Square[startSquare - 4] = {0, false, false}
+                            if RankIndex(targetSquare) == 0 or RankIndex(targetSquare) == 7 then
+                                Board.Square[startSquare - 1] = Board.Square[startSquare - 4]
+                                Board.Square[startSquare - 4] = {0, false, false}
+                            end
                         end
                     end
-                end
 
-                -- Right Castling
-                if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
+                    -- Right Castling
                     if (targetSquare - startSquare) > 1 then
                         if Piece.PieceType(Board.Square[startSquare + 3][1]) == Piece().Rook and
                             not Board.Square[startSquare + 3][3] and not Board.Square[startSquare][3] then
-                            Board.Square[startSquare + 1] = Board.Square[startSquare + 3]
-                            Board.Square[startSquare + 3] = {0, false, false}
+                            if RankIndex(targetSquare) == 0 or RankIndex(targetSquare) == 7 then
+                                Board.Square[startSquare + 1] = Board.Square[startSquare + 3]
+                                Board.Square[startSquare + 3] = {0, false, false}
+                            end
                         end
                     end
                 end

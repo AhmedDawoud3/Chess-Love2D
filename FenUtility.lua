@@ -30,6 +30,39 @@ function PositionFromFen(fen)
             end
         end
     end
+    loadedPositionInfo.turn = sections[2]
+    castlingRights = (#sections > 2 and sections[3]) or "KQkq"
+    loadedPositionInfo.whiteCastleKingside = false
+    loadedPositionInfo.whiteCastleQueenside = false
+    loadedPositionInfo.blackCastleKingside = false
+    loadedPositionInfo.blackCastleQueenside = false
+    for i = 1, #castlingRights do
+        local c = castlingRights:sub(i, i)
+        if c == "K" then
+            loadedPositionInfo.whiteCastleKingside = true
+        elseif c == 'Q' then
+            loadedPositionInfo.whiteCastleQueenside = true
+        elseif c == 'k' then
+            loadedPositionInfo.blackCastleKingside = true
+        elseif c == 'q' then
+            loadedPositionInfo.blackCastleQueenside = true
+        end
+    end
+    if #sections > 3 then
+        enPassantFileName = sections[4]:sub(1, 1)
+        for i = 1, #fileNames do
+            local c = fileNames:sub(i, i)
+            if c == enPassantFileName then
+                loadedPositionInfo.epFile = i
+                break
+            end
+        end
+    end
+
+    if #sections > 4 then
+        loadedPositionInfo.plyCount = tonumber(sections[5])
+    end
+
     return loadedPositionInfo
 end
 LoadedPositionInfo = Class {}
@@ -41,8 +74,8 @@ function LoadedPositionInfo:init()
     self.blackCastleKingside = nil
     self.blackCastleQueenside = nil
     self.epFile = nil
-    self.whiteToMove = nil
-    self.plyCount = nil
+    self.turn = 0
+    self.plyCount = 0
 
     for i = 1, 64 do
         self.squares[i] = 0
@@ -51,7 +84,7 @@ end
 
 function Split(s, delimiter)
     result = {}
-    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
+    for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
         table.insert(result, match);
     end
     return result

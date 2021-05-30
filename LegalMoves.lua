@@ -21,7 +21,7 @@ function CreatePawnMovement(square, pieceCol)
     local index = (((pieceCol == Piece().White) and 1) or -1)
     if RankIndex(square) >= 0 and RankIndex(square) < 7 then
         if IsClearSquare(square + 8 * index) then
-            if not IsMoved(square) then
+            if RankIndex(square) + 2.5 * -index == 3.5 then
                 if Board.Square[square + 16 * index][1] == 0 then
                     table.insert(moves_, Move(square, square + 16 * index))
                 end
@@ -43,6 +43,16 @@ function CreatePawnMovement(square, pieceCol)
         for i, v in ipairs(moves_) do
             table.insert(_moves_, v)
         end
+
+        -- -- En passant
+        -- if IsSquare(square + 1) then
+        --     if Piece().PieceType(Board.Square[square + 1][1]) == Piece().Pawn then
+        --         if lastMove and lastMove.TargetSquare == square + 1 then
+        --             table.insert(_moves_, Move(square, square + 9 * index))
+        --         end
+        --     end
+        -- end
+
     end
     return _moves_
 end
@@ -266,16 +276,21 @@ function CreateKingMovement(square, pieceCol)
     -- Check Left Castle (-4)
     if not Board.Square[square][3] and not Board.Square[square - 4][3] and Piece.PieceType(Board.Square[square - 4][1]) ==
         Piece().Rook then
-        if Board.Square[square - 3][1] == 0 and Board.Square[square - 2][1] == 0 and Board.Square[square - 1][1] == 0 then
-            table.insert(_moves_, Move(square, square - 2))
+        if Game.wqcstl then
+            if Board.Square[square - 3][1] == 0 and Board.Square[square - 2][1] == 0 and Board.Square[square - 1][1] ==
+                0 then
+                table.insert(_moves_, Move(square, square - 2))
+            end
         end
     end
 
     -- Check Right Castling (+3)
     if not Board.Square[square][3] and not Board.Square[square + 3][3] and Piece.PieceType(Board.Square[square + 3][1]) ==
         Piece().Rook then
-        if Board.Square[square + 2][1] == 0 and Board.Square[square + 1][1] == 0 then
-            table.insert(_moves_, Move(square, square + 2))
+        if Game.wqcstl then
+            if Board.Square[square + 2][1] == 0 and Board.Square[square + 1][1] == 0 then
+                table.insert(_moves_, Move(square, square + 2))
+            end
         end
     end
 

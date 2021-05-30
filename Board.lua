@@ -58,7 +58,7 @@ function Board:DisplayLegalMoves()
         -- print(FileIndex(v.TargetSquare), RankIndex(v.TargetSquare))
         DrawSquare({0.8, 0.1, 0.2, 0.7}, {FileIndex(v.TargetSquare), RankIndex(v.TargetSquare)})
     end
-    if selectedPieceSquare and #moves >0 then
+    if selectedPieceSquare and #moves > 0 then
         DrawSquare({1, 0.65, 0.2, 0.8}, {FileIndex(selectedPieceSquare), RankIndex(selectedPieceSquare)})
     end
 end
@@ -72,8 +72,14 @@ function Board:LoadPosition(fen)
 
     for squareIndex = 1, 64 do
         piece = loadedPosition.squares[squareIndex]
-        self.Square[squareIndex][1] = piece
-        self.Square[squareIndex][2] = true
-        self.Square[squareIndex][3] = false
+        Game.Board.Square[squareIndex][1] = piece
+        Game.Board.Square[squareIndex][2] = true
+        Game.Board.Square[squareIndex][3] = false
     end
+    Game.turn = loadedPosition.turn
+    Game.wkcstl = loadedPosition.whiteCastleKingside
+    Game.wqcstl = loadedPosition.whiteCastleQueenside
+    Game.bkcstl = loadedPosition.blackCastleKingside
+    Game.bqcstl = loadedPosition.blackCastleQueenside
+    Game.epFile = loadedPosition.epFile
 end

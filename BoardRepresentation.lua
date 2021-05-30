@@ -1,3 +1,6 @@
+fileNames = "abcdefgh"
+rankNames = "12345678"
+
 function SquareToCordinate(square)
     square = square
     -- local file = square % 7

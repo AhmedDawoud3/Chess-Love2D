@@ -8,7 +8,8 @@ audio = {
 function GameManager:init()
     Loader = Loader()
     Board = Board()
-    Board:LoadStartPosition()
+    Game = Game(Board)
+    Game.Board:LoadStartPosition()
     -- Board.Square[16] = {bit.bor(Piece().White, Piece().Knight), true}
     Player = Player()
 end
@@ -22,6 +23,18 @@ function GameManager:Render()
     if lastMove then
         Board:DisplayLastMoves()
     end
-    Board:DisplayLegalMoves()
-    Board:DisplayPieces()
+    Game.Board:DisplayLegalMoves()
+    Game.Board:DisplayPieces()
+end
+
+Game = Class {}
+
+function Game:init(board, turn, wlcstl, wrcstl, blcstl, brcstl, epFile)
+    self.Board = board
+    self.turn = turn
+    self.wkcstl = wlcstl
+    self.wqcstl = wrcstl
+    self.bkcstl = blcstl
+    self.bqcstl = brcstl
+    self.epFile = epFile
 end
