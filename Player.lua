@@ -62,16 +62,18 @@ function TryMakeMove(startSquare, targetSquare)
                 end
 
                 -- Handling En Passant
-                if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn and RankIndex(targetSquare) -
-                    RankIndex(startSquare) == 2 then
+                if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn and
+                    (RankIndex(targetSquare) - RankIndex(startSquare) == 2 or RankIndex(targetSquare) -
+                        RankIndex(startSquare) == -2) then
                     Game.epFile = FileIndex(targetSquare) + 1
                 else
-                    Game.epFile = nil
+                    Game.epFile = 0
                 end
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn then
                     Game.fiftyCounter = 0
+                    local index = (Game.turn == 'w' and 1 )or -1
                     if Board.Square[targetSquare][1] == 0 and FileIndex(targetSquare) ~= FileIndex(startSquare) then
-                        Board.Square[targetSquare - 8] = {0, false, false}
+                        Board.Square[targetSquare - 8 * index] = {0, false, false}
                         audio["enPassant"]:play()
                     end
                 end

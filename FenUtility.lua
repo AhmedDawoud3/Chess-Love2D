@@ -101,7 +101,8 @@ function CurrentFEN(Board)
         end
         if numEmptyFiles ~= 0 then
             fen = fen .. tostring(numEmptyFiles)
-        end        if rank ~= 0 then
+        end
+        if rank ~= 0 then
             fen = fen .. '/'
         end
     end
@@ -134,10 +135,10 @@ function CurrentFEN(Board)
     -- En-Passant
     fen = fen .. " "
     epFile = Game.epFile
-    if epfile == nil then
+    if epFile == 0 then
         fen = fen .. '-'
     else
-        fileName = fileNames:sub(epfile, epfile)
+        fileName = fileNames:sub(epFile, epFile)
         epRank = (Game.turn == 'w') and 6 or 3
         fen = fen .. fileName .. tostring(epRank)
     end

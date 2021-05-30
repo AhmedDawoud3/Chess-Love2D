@@ -45,21 +45,20 @@ function CreatePawnMovement(square, pieceCol)
         end
 
         -- En passant
-        if IsSquare(square + 1) then
-            if Piece().PieceType(Board.Square[square + 1][1]) == Piece().Pawn then
-                if FileIndex(square + 1) == Game.epFile then
-                    table.insert(_moves_, Move(square, square + 9 * index))
-                end
-            end
-        end
-        if IsSquare(square - 1) then
-            if Piece().PieceType(Board.Square[square - 1][1]) == Piece().Pawn then
-                if FileIndex(square - 1) == Game.epFile then
-                    table.insert(_moves_, Move(square, square + 7 * index))
-                end
-            end
-        end
+        if Game.epFile then
+            if math.abs(FileIndex(square) + 1 - Game.epFile) == 1 then
+                local index = (Game.turn == 'w' and 1) or -1
+                if RankIndex(square) == 3.5 + 0.5 * -index then
+                    print(index)
+                    if FileIndex(square) + 1 < Game.epFile then
 
+                        table.insert(_moves_, Move(square, square + (index == 1 and 9 or -7)))
+                    else
+                        table.insert(_moves_, Move(square, square + (index == 1 and 7 or -9)))
+                    end
+                end
+            end
+        end
     end
     return _moves_
 end
