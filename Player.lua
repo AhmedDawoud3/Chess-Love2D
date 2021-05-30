@@ -65,7 +65,7 @@ function TryMakeMove(startSquare, targetSquare)
                     Game.epFile = nil
                 end
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn then
-                    if Board.Square[targetSquare][1] == 0  and FileIndex(targetSquare) ~= FileIndex(startSquare) then
+                    if Board.Square[targetSquare][1] == 0 and FileIndex(targetSquare) ~= FileIndex(startSquare) then
                         Board.Square[targetSquare - 8] = {0, false, false}
                         audio["enPassant"]:play()
                     end
@@ -111,6 +111,7 @@ function TryMakeMove(startSquare, targetSquare)
                 Board.Square[targetSquare][3] = true
                 table.insert(oldMoves, Move(startSquare, targetSquare))
                 Game:NextTurn()
+                Game.moves = Game.moves + 1
             end
         end
         if Board.Square[targetSquare] ~= Board.Square[startSquare] then

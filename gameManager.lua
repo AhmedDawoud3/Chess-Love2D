@@ -38,6 +38,7 @@ function Game:init(board, turn, wlcstl, wrcstl, blcstl, brcstl, epFile)
     self.bkcstl = blcstl
     self.bqcstl = brcstl
     self.epFile = epFile
+    self.moves = 0
 end
 
 function Game:NextTurn()
