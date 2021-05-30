@@ -47,6 +47,12 @@ function Board:DisplayPieces()
             floatingPiece[2][2] - 60)
     end
 end
+
+function Board:DisplayLastMoves()
+    DrawSquare({0.78, 0.78, 0.24, 0.5}, {FileIndex(lastMove.StartSquare), RankIndex(lastMove.StartSquare)})
+    DrawSquare({0.78, 0.78, 0.24, 0.7}, {FileIndex(lastMove.TargetSquare), RankIndex(lastMove.TargetSquare)})
+end
+
 function Board:DisplayLegalMoves()
     for i, v in ipairs(moves) do
         -- print(FileIndex(v.TargetSquare), RankIndex(v.TargetSquare))

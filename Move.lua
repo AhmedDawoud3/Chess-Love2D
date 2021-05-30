@@ -1,6 +1,7 @@
 Move = Class {}
 moves = {}
 NumSquaresToEdge = {}
+lastMove = nil
 
 function Move:init(StartSquare, TargetSquare)
     self.StartSquare = StartSquare

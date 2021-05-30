@@ -19,6 +19,9 @@ end
 
 function GameManager:Render()
     CreateGraphicalBoard()
+    if lastMove then
+        Board:DisplayLastMoves()
+    end
     Board:DisplayLegalMoves()
     Board:DisplayPieces()
 end
