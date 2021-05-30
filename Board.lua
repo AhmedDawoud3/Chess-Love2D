@@ -58,6 +58,9 @@ function Board:DisplayLegalMoves()
         -- print(FileIndex(v.TargetSquare), RankIndex(v.TargetSquare))
         DrawSquare({0.8, 0.1, 0.2, 0.7}, {FileIndex(v.TargetSquare), RankIndex(v.TargetSquare)})
     end
+    if selectedPieceSquare and #moves >0 then
+        DrawSquare({1, 0.65, 0.2, 0.8}, {FileIndex(selectedPieceSquare), RankIndex(selectedPieceSquare)})
+    end
 end
 
 function Board:LoadStartPosition()
