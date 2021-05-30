@@ -50,8 +50,10 @@ function TryMakeMove(startSquare, targetSquare)
         for i, v in ipairs(moves) do
             if targetSquare == v.TargetSquare then
                 if Board.Square[targetSquare][1] ~= 0 then
+                    audio["capture"]:stop()
                     audio["capture"]:play()
                 else
+                    audio["normal"]:stop()
                     audio["normal"]:play()
                 end
                 Board.Square[targetSquare] = Board.Square[startSquare]
