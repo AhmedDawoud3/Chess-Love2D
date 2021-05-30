@@ -110,6 +110,7 @@ function TryMakeMove(startSquare, targetSquare)
                 Board.Square[startSquare] = {0, false, false}
                 Board.Square[targetSquare][3] = true
                 lastMove = Move(startSquare, targetSquare)
+                Game:NextTurn()
             end
         end
         if Board.Square[targetSquare] ~= Board.Square[startSquare] then

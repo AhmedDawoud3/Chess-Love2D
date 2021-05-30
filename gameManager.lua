@@ -39,3 +39,11 @@ function Game:init(board, turn, wlcstl, wrcstl, blcstl, brcstl, epFile)
     self.bqcstl = brcstl
     self.epFile = epFile
 end
+
+function Game:NextTurn()
+    if self.turn == 'w' then
+        self.turn = 'b'
+    else
+        self.turn = 'w'
+    end
+end

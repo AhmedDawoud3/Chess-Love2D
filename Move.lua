@@ -27,20 +27,24 @@ function GenerateMoves()
     local piece = Board.Square[selectedPieceSquare][1]
     local pieceType = Piece.PieceType(piece)
     local pieceCol = (Piece().IsColor(piece, Piece().White) and Piece().White) or Piece().Black
-    if pieceType == Piece().Knight then
-        moves = CreateKnightMovement(selectedPieceSquare, pieceCol)
-    elseif pieceType == Piece().Pawn then
-        moves = CreatePawnMovement(selectedPieceSquare, pieceCol)
-    elseif pieceType == Piece().Bishop then
-        moves = CreateBishopMovement(selectedPieceSquare, pieceCol)
-    elseif pieceType == Piece().Rook then
-        moves = CreateRookMovement(selectedPieceSquare, pieceCol)
-    elseif pieceType == Piece().Queen then
-        moves = CreateQueenMovement(selectedPieceSquare, pieceCol)
-    elseif pieceType == Piece().King then
-        moves = CreateKingMovement(selectedPieceSquare, pieceCol)
+    local t = (pieceCol == Piece().White and 'w') or 'b'
+    if Game.turn == t then
+        if pieceType == Piece().Knight then
+            moves = CreateKnightMovement(selectedPieceSquare, pieceCol)
+        elseif pieceType == Piece().Pawn then
+            moves = CreatePawnMovement(selectedPieceSquare, pieceCol)
+        elseif pieceType == Piece().Bishop then
+            moves = CreateBishopMovement(selectedPieceSquare, pieceCol)
+        elseif pieceType == Piece().Rook then
+            moves = CreateRookMovement(selectedPieceSquare, pieceCol)
+        elseif pieceType == Piece().Queen then
+            moves = CreateQueenMovement(selectedPieceSquare, pieceCol)
+        elseif pieceType == Piece().King then
+            moves = CreateKingMovement(selectedPieceSquare, pieceCol)
+        end
+    else
+        moves = {}
     end
-
 end
 
 function DistanceBetweenSquares(square1, square2, dist)
