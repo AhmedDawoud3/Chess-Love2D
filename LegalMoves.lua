@@ -283,7 +283,8 @@ function CreateKingMovement(square, pieceCol)
     -- Check Left Castle (-4)
     if not Board.Square[square][3] and not Board.Square[square - 4][3] and Piece.PieceType(Board.Square[square - 4][1]) ==
         Piece().Rook then
-        if Game.wqcstl then
+        if (Game.wqcstl and Piece().IsColor(Board.Square[square][1], Piece().White)) or
+            (Game.bqcstl and Piece().IsColor(Board.Square[square][1], Piece().Black)) then
             if Board.Square[square - 3][1] == 0 and Board.Square[square - 2][1] == 0 and Board.Square[square - 1][1] ==
                 0 then
                 table.insert(_moves_, Move(square, square - 2))
@@ -294,7 +295,8 @@ function CreateKingMovement(square, pieceCol)
     -- Check Right Castling (+3)
     if not Board.Square[square][3] and not Board.Square[square + 3][3] and Piece.PieceType(Board.Square[square + 3][1]) ==
         Piece().Rook then
-        if Game.wqcstl then
+        if (Game.wkcstl and Piece().IsColor(Board.Square[square][1], Piece().White)) or
+            (Game.bkcstl and Piece().IsColor(Board.Square[square][1], Piece().Black)) then
             if Board.Square[square + 2][1] == 0 and Board.Square[square + 1][1] == 0 then
                 table.insert(_moves_, Move(square, square + 2))
             end
