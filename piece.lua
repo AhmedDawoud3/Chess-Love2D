@@ -36,3 +36,12 @@ function Piece.SameColor(square1, square2)
     end
     return false
 end
+
+function IsPiece(squareIndex)
+    if IsSquare(squareIndex) then
+        if Board.Square[squareIndex][1] ~= 0 then
+            return true
+        end
+    end
+    return false
+end
