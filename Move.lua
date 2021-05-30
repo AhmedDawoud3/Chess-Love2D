@@ -33,6 +33,8 @@ function GenerateMoves()
         moves = CreatePawnMovement(selectedPieceSquare, pieceCol)
     elseif pieceType == Piece().Bishop then
         moves = CreateBishopMovement(selectedPieceSquare, pieceCol)
+    elseif pieceType == Piece().Rook then
+        moves = CreateRookMovement(selectedPieceSquare, pieceCol)
     end
 
 end

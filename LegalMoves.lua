@@ -134,3 +134,41 @@ function CreateBishopMovement(square, pieceCol)
     end
     return _moves_
 end
+
+function CreateRookMovement(square, pieceCol)
+    local moves_ = {}
+    local _moves_ = {}
+    local pRank = RankIndex(square)
+    local pFile = FileIndex(square)
+    for i = -1, 1, 2 do
+        for k = 1, 7 do
+            local sq = square + i * k
+            if RankIndex(sq) == pRank and IsSquare(sq) then
+                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+                    break
+                end
+                table.insert(moves_, Move(square, sq))
+                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                    break
+                end
+            end
+        end
+        for k = 1, 7 do
+            local sq = square + i * (k * 8)
+            if FileIndex(sq) == pFile and IsSquare(sq) then
+                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+                    break
+                end
+                table.insert(moves_, Move(square, sq))
+                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                    break
+                end
+            end
+        end
+    end
+
+    for i, v in ipairs(moves_) do
+        table.insert(_moves_, v)
+    end
+    return moves_
+end
