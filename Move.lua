@@ -37,6 +37,8 @@ function GenerateMoves()
         moves = CreateRookMovement(selectedPieceSquare, pieceCol)
     elseif pieceType == Piece().Queen then
         moves = CreateQueenMovement(selectedPieceSquare, pieceCol)
+    elseif pieceType == Piece().King then
+        moves = CreateKingMovement(selectedPieceSquare, pieceCol)
     end
 
 end

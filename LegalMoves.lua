@@ -242,3 +242,24 @@ function CreateQueenMovement(square, pieceCol)
 
     return moves_
 end
+
+function CreateKingMovement(square, pieceCol)
+    local moves_ = {}
+    local _moves_ = {}
+
+    table.insert(moves_, 1)
+    table.insert(moves_, 8)
+    table.insert(moves_, 9)
+    table.insert(moves_, 7)
+
+    for i = -1, 1, 2 do
+        for k, v in ipairs(moves_) do
+            local sq = square + v * i
+            if IsSquare(sq) and DistanceBetweenSquares(sq, square, 200) then
+                table.insert(_moves_, Move(square, sq))
+            end
+        end
+    end
+
+    return _moves_
+end
