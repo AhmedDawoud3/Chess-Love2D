@@ -45,7 +45,7 @@ function CreatePawnMovement(square, pieceCol)
         end
 
         -- En passant
-        if Game.epFile then
+        if Game.epFile ~= 0 then
             if math.abs(FileIndex(square) + 1 - Game.epFile) == 1 then
                 local index = (Game.turn == 'w' and 1) or -1
                 if RankIndex(square) == 3.5 + 0.5 * -index then
