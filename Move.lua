@@ -30,7 +30,10 @@ function GenerateMoves()
         moves = CreateKnightMovement(selectedPieceSquare, pieceCol)
     elseif pieceType == Piece().Pawn then
         moves = CreatePawnMovement(selectedPieceSquare, pieceCol)
+    elseif pieceType == Piece().Bishop then
+        moves = CreateBishopMovement(selectedPieceSquare, pieceCol)
     end
+
 end
 
 function DistanceBetweenSquares(square1, square2, dist)

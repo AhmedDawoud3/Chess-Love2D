@@ -1,19 +1,20 @@
--- NumSquaresToEdge = {}
--- function PrecomputedMoveData()
---     for file = 0, 7 do
---         for rank = 0, 7 do
---             numNorth = 7 - rank
---             numSouth = rank
---             numWest = file
---             numEast = 7 - file
---             squareIndex = rank * 8 + file + 1
---             NumSquaresToEdge[squareIndex] = {numNumber, numSouth, numWest, numEast, math.min(numNorth, numWest),
---                                              math.min(numSouth, numEast),
---                                               math.min(numNorth, numEast),
---                                              math.min(numSouth, numWest)}
---         end
---     end
--- end
+function PrecomputedMoveData()
+    NumSquaresToEdge = {}
+    for file = 0, 7 do
+        for rank = 0, 7 do
+            numNorth = 7 - rank
+            numSouth = rank
+            numWest = file
+            numEast = 7 - file
+            squareIndex = rank * 8 + file + 1
+            NumSquaresToEdge[squareIndex] = {numNumber, numSouth, numWest, numEast, math.min(numNorth, numWest),
+                                             math.min(numSouth, numEast), math.min(numNorth, numEast),
+                                             math.min(numSouth, numWest)}
+        end
+    end
+    return NumSquaresToEdge
+end
+
 function CreatePawnMovement(square, pieceCol)
     local moves_ = {}
     local _moves_ = {}
@@ -47,26 +48,24 @@ function CreatePawnMovement(square, pieceCol)
 end
 
 function GenerateSlidingMove(startSquare, piece)
-    startDirIndex = ((Piece().PieceType(piece) == Piece().Bishop) and 4) or 0
-    endDirIndex = ((Piece().PieceType(piece) == Piece().Rook) and 4) or 8
+    local moves_ = {}
+    startDirIndex = ((Piece().PieceType(piece) == Piece().Bishop) and 5) or 1
+    endDirIndex = ((Piece().PieceType(piece) == Piece().Rook) and 5) or 9
     for directionIndex = startDirIndex, 7 do
-        print(NumSquaresToEdge[startSquare + 1][directionIndex])
-        for n = endDirIndex, NumSquaresToEdge[startSquare + 1][directionIndex + 1] do
-            local targetSquare = startSquare + DirectionOffsets[directionIndex + 1] * (n + 1)
-            pieceOnTargetSquare = Board.Square[targetSquare + 1]
+        for n = endDirIndex, NumSquaresToEdge[startSquare][directionIndex] do
+            local targetSquare = startSquare + DirectionOffsets[directionIndex] * (n + 1)
+            pieceOnTargetSquare = Board.Square[targetSquare]
 
             if (Piece().IsColor(pieceOnTargetSquare, Piece().White)) then
                 break
             end
-
-            table.insert(moves, Move(startSquare, targetSquare))
-
+            table.insert(moves_, Move(startSquare, targetSquare))
             if (Piece().IsColor(pieceOnTargetSquare, Piece().Black)) then
                 break
             end
-
         end
     end
+    return moves_
 end
 
 function CreateKnightMovement(square, pieceCol)
@@ -94,3 +93,44 @@ function CreateKnightMovement(square, pieceCol)
     return _moves_
 end
 
+function CreateBishopMovement(square, pieceCol)
+    local moves_ = {}
+    local _moves_ = {}
+    for i = -1, 1, 2 do
+        for j = 1, 8 do
+            if IsSquare(square + i * j * 9) then
+                if Piece.SameColor(square, square + i * j * 9) then
+                    break
+                else
+                    table.insert(moves_, Move(square, square + i * j * 9))
+                    if not Piece.SameColor(square, square + i * j * 9) and not IsClearSquare(square + i * j * 9) then
+                        break
+                    end
+                end
+            else
+                break
+            end
+        end
+        for j = 1, 8 do
+            if IsSquare(square + i * j * 7) then
+                if Piece.SameColor(square, square + i * j * 7) then
+                    break
+                else
+                    table.insert(moves_, Move(square, square + i * j * 7))
+                    if not Piece.SameColor(square, square + i * j * 7) and not IsClearSquare(square + i * j * 7) then
+                        break
+                    end
+                end
+            else
+                break
+            end
+        end
+    end
+
+    for i, v in ipairs(moves_) do
+        if DarkSquare(v.StartSquare) == DarkSquare(v.TargetSquare) then
+            table.insert(_moves_, v)
+        end
+    end
+    return _moves_
+end
