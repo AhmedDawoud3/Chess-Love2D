@@ -167,8 +167,78 @@ function CreateRookMovement(square, pieceCol)
         end
     end
 
-    for i, v in ipairs(moves_) do
-        table.insert(_moves_, v)
+    return moves_
+end
+
+function CreateQueenMovement(square, pieceCol)
+    local moves_ = {}
+    local moves_D = {}
+    local pRank = RankIndex(square)
+    local pFile = FileIndex(square)
+
+    for i = -1, 1, 2 do
+        for k = 1, 7 do
+            local sq = square + i * k
+            if RankIndex(sq) == pRank and IsSquare(sq) then
+                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+                    break
+                end
+                table.insert(moves_, Move(square, sq))
+                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                    break
+                end
+            end
+        end
+        for k = 1, 7 do
+            local sq = square + i * (k * 8)
+            if FileIndex(sq) == pFile and IsSquare(sq) then
+                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+                    break
+                end
+                table.insert(moves_, Move(square, sq))
+                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                    break
+                end
+            end
+        end
     end
+
+    for i = -1, 1, 2 do
+        for j = 1, 8 do
+            if IsSquare(square + i * j * 9) then
+                if Piece.SameColor(square, square + i * j * 9) then
+                    break
+                else
+                    table.insert(moves_D, Move(square, square + i * j * 9))
+                    if not Piece.SameColor(square, square + i * j * 9) and not IsClearSquare(square + i * j * 9) then
+                        break
+                    end
+                end
+            else
+                break
+            end
+        end
+        for j = 1, 8 do
+            if IsSquare(square + i * j * 7) then
+                if Piece.SameColor(square, square + i * j * 7) then
+                    break
+                else
+                    table.insert(moves_D, Move(square, square + i * j * 7))
+                    if not Piece.SameColor(square, square + i * j * 7) and not IsClearSquare(square + i * j * 7) then
+                        break
+                    end
+                end
+            else
+                break
+            end
+        end
+    end
+
+    for i, v in ipairs(moves_D) do
+        if DarkSquare(v.StartSquare) == DarkSquare(v.TargetSquare) then
+            table.insert(moves_, v)
+        end
+    end
+
     return moves_
 end
