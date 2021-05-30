@@ -20,8 +20,12 @@ function IndexFromCoord(fileIndex, rankIndex)
     return rankIndex * 8 + fileIndex + 1
 end
 
-function LightSquare(fileIndex, rankIndex)
-    return (fileIndex + rankIndex) % 2 ~= 0
+function LightSquare(squareIndex)
+    return (FileIndex(squareIndex) + RankIndex(squareIndex)) % 2 ~= 0
+end
+
+function DarkSquare(squareIndex)
+    return (FileIndex(squareIndex) + RankIndex(squareIndex)) % 2 == 0
 end
 
 function IsClearSquare(squareIndex)
