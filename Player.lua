@@ -22,7 +22,7 @@ end
 function HandlePieceSelection(mousePos)
     if love.mouse.isDown(1) then
         if TryGetSquareUnderMouse(mousePos) then
-            GenerateMoves()
+            moves = GenerateMoves()
             currentState = "DraggingPiece"
         end
     end
@@ -71,7 +71,7 @@ function TryMakeMove(startSquare, targetSquare)
                 end
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn then
                     Game.fiftyCounter = 0
-                    local index = (Game.turn == 'w' and 1 )or -1
+                    local index = (Game.turn == 'w' and 1) or -1
                     if Board.Square[targetSquare][1] == 0 and FileIndex(targetSquare) ~= FileIndex(startSquare) then
                         Board.Square[targetSquare - 8 * index] = {0, false, false}
                         audio["enPassant"]:play()

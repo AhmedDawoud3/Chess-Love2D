@@ -48,5 +48,4 @@ function Game:NextTurn()
     else
         self.turn = 'w'
     end
-    print(CurrentFEN(Game.Board))
 end

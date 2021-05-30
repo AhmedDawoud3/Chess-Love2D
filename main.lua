@@ -29,5 +29,7 @@ end
 function love.keypressed(key)
     if key == 'escape' then
         love.window.close()
+    elseif key == 'z' then
+        UndoMove()
     end
 end
