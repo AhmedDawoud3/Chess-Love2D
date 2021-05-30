@@ -256,7 +256,9 @@ function CreateKingMovement(square, pieceCol)
         for k, v in ipairs(moves_) do
             local sq = square + v * i
             if IsSquare(sq) and DistanceBetweenSquares(sq, square, 200) then
-                table.insert(_moves_, Move(square, sq))
+                if not Piece().IsColor(Board.Square[sq][1], pieceCol) then
+                    table.insert(_moves_, Move(square, sq))
+                end
             end
         end
     end
