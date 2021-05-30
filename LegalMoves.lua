@@ -263,5 +263,21 @@ function CreateKingMovement(square, pieceCol)
         end
     end
 
+    -- Check Left Castle (-4)
+    if not Board.Square[square][3] and not Board.Square[square - 4][3] and Piece.PieceType(Board.Square[square - 4][1]) ==
+        Piece().Rook then
+        if Board.Square[square - 3][1] == 0 and Board.Square[square - 2][1] == 0 and Board.Square[square - 1][1] == 0 then
+            table.insert(_moves_, Move(square, square - 2))
+        end
+    end
+
+    -- Check Right Castling (+3)
+    if not Board.Square[square][3] and not Board.Square[square + 3][3] and Piece.PieceType(Board.Square[square + 3][1]) ==
+        Piece().Rook then
+        if Board.Square[square + 2][1] == 0 and Board.Square[square + 1][1] == 0 then
+            table.insert(_moves_, Move(square, square + 2))
+        end
+    end
+
     return _moves_
 end

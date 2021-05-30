@@ -56,6 +56,29 @@ function TryMakeMove(startSquare, targetSquare)
                     audio["normal"]:stop()
                     audio["normal"]:play()
                 end
+
+                -- Left Castling
+                if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
+                    if (startSquare - targetSquare) > 1 then
+                        if Piece.PieceType(Board.Square[startSquare - 4][1]) == Piece().Rook and
+                            not Board.Square[startSquare - 4][3] and not Board.Square[startSquare][3] then
+                            Board.Square[startSquare - 1] = Board.Square[startSquare - 4]
+                            Board.Square[startSquare - 4] = {0, false, false}
+                        end
+                    end
+                end
+
+                -- Right Castling
+                if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
+                    if (targetSquare - startSquare) > 1 then
+                        if Piece.PieceType(Board.Square[startSquare + 3][1]) == Piece().Rook and
+                            not Board.Square[startSquare + 3][3] and not Board.Square[startSquare][3] then
+                            Board.Square[startSquare + 1] = Board.Square[startSquare + 3]
+                            Board.Square[startSquare + 3] = {0, false, false}
+                        end
+                    end
+                end
+
                 Board.Square[targetSquare] = Board.Square[startSquare]
                 Board.Square[targetSquare][2] = true
                 Board.Square[startSquare] = {0, false, false}
