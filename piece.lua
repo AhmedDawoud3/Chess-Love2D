@@ -31,5 +31,8 @@ end
 function Piece.SameColor(square1, square2)
     piece1 = Board.Square[square1][1]
     piece2 = Board.Square[square2][1]
-    return Piece.IsColor(piece1, Piece().White) == Piece.IsColor(piece2, Piece().White)
+    if piece1 ~= 0 and piece2 ~= 0 then
+        return (Piece.IsColor(piece1, Piece().White) == Piece.IsColor(piece2, Piece().White))
+    end
+    return false
 end
