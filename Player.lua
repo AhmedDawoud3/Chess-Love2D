@@ -117,6 +117,7 @@ function TryMakeMove(startSquare, targetSquare)
                 Board.Square[startSquare] = {0, false, false}
                 Board.Square[targetSquare][3] = true
                 table.insert(oldMoves, Move(startSquare, targetSquare))
+                table.insert(moveHistory, CurrentFEN(Game.Board))
                 Game:NextTurn()
                 Game.fiftyCounter = Game.fiftyCounter + 1
             end

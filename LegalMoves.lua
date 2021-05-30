@@ -49,7 +49,6 @@ function CreatePawnMovement(square, pieceCol)
             if math.abs(FileIndex(square) + 1 - Game.epFile) == 1 then
                 local index = (Game.turn == 'w' and 1) or -1
                 if RankIndex(square) == 3.5 + 0.5 * -index then
-                    print(index)
                     if FileIndex(square) + 1 < Game.epFile then
 
                         table.insert(_moves_, Move(square, square + (index == 1 and 9 or -7)))

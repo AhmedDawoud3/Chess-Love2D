@@ -2,6 +2,7 @@ Move = Class {}
 moves = {}
 NumSquaresToEdge = {}
 oldMoves = {}
+moveHistory = {}
 
 function Move:init(StartSquare, TargetSquare)
     self.StartSquare = StartSquare
