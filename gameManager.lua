@@ -38,7 +38,8 @@ function Game:init(board, turn, wlcstl, wrcstl, blcstl, brcstl, epFile)
     self.bkcstl = blcstl
     self.bqcstl = brcstl
     self.epFile = epFile
-    self.moves = 0
+    self.plyCount = 1
+    self.fiftyCounter = 0
 end
 
 function Game:NextTurn()
@@ -47,4 +48,5 @@ function Game:NextTurn()
     else
         self.turn = 'w'
     end
+    print(CurrentFEN(Game.Board))
 end

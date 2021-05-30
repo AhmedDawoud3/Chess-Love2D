@@ -65,6 +65,93 @@ function PositionFromFen(fen)
 
     return loadedPositionInfo
 end
+
+function CurrentFEN(Board)
+    local fen = ''
+    for rank = 7, 0, -1 do
+        numEmptyFiles = 0
+        for file = 0, 7 do
+            local i = rank * 8 + file + 1
+            local piece = Game.Board.Square[i][1]
+            if piece ~= 0 then
+                if numEmptyFiles ~= 0 then
+                    fen = fen .. tostring(numEmptyFiles)
+                    numEmptyFiles = 0
+                end
+                isBlack = Piece().IsColor(piece, Piece().Black)
+                pieceType = Piece().PieceType(piece)
+                pieceChar = " "
+                if pieceType == Piece().Rook then
+                    pieceChar = 'R'
+                elseif pieceType == Piece().Knight then
+                    pieceChar = 'N'
+                elseif pieceType == Piece().Bishop then
+                    pieceChar = 'B'
+                elseif pieceType == Piece().Queen then
+                    pieceChar = 'Q'
+                elseif pieceType == Piece().King then
+                    pieceChar = 'K'
+                elseif pieceType == Piece().Pawn then
+                    pieceChar = 'P'
+                end
+                fen = fen .. ((isBlack and string.lower(pieceChar)) or pieceChar)
+            else
+                numEmptyFiles = numEmptyFiles + 1
+            end
+        end
+        if numEmptyFiles ~= 0 then
+            fen = fen .. tostring(numEmptyFiles)
+        end        if rank ~= 0 then
+            fen = fen .. '/'
+        end
+    end
+    fen = fen .. ' '
+    fen = fen .. ((Game.turn == 'w' and 'w') or 'b')
+
+    -- Castling
+    whiteKingSide = Game.wkcstl
+    whiteQueenSide = Game.wqcstl
+    blackKingSide = Game.bkcstl
+    blackQueenSide = Game.bqcstl
+    fen = fen .. ' '
+    if whiteKingSide then
+        fen = fen .. 'K'
+    end
+    if whiteQueenSide then
+        fen = fen .. 'Q'
+    end
+    if blackKingSide then
+        fen = fen .. 'k'
+    end
+    if blackQueenSide then
+        fen = fen .. 'q'
+    end
+    if whiteKingSide or whiteQueenSide or blackKingSide or blackQueenSide then
+    else
+        fen = fen .. "-"
+    end
+
+    -- En-Passant
+    fen = fen .. " "
+    epFile = Game.epFile
+    if epfile == nil then
+        fen = fen .. '-'
+    else
+        fileName = fileNames:sub(epfile, epfile)
+        epRank = (Game.turn == 'w') and 6 or 3
+        fen = fen .. fileName .. tostring(epRank)
+    end
+
+    --  50 Move Counter
+    fen = fen .. " "
+    fen = fen .. tostring(Game.fiftyCounter)
+
+    -- Play Counter
+    fen = fen .. " "
+    fen = fen .. tostring(math.floor(Game.plyCount / 2) + 1)
+    return fen
+end
+
 LoadedPositionInfo = Class {}
 
 function LoadedPositionInfo:init()

@@ -49,9 +49,13 @@ function TryMakeMove(startSquare, targetSquare)
     if startSquare ~= targetSquare then
         for i, v in ipairs(moves) do
             if targetSquare == v.TargetSquare then
+                if Piece().IsColor(Game.Board.Square[startSquare][1], Piece().Black) then
+                    Game.plyCount = Game.plyCount + 1
+                end
                 if Board.Square[targetSquare][1] ~= 0 then
                     audio["capture"]:stop()
                     audio["capture"]:play()
+                    Game.fiftyCounter = -1
                 else
                     audio["normal"]:stop()
                     audio["normal"]:play()
@@ -60,11 +64,12 @@ function TryMakeMove(startSquare, targetSquare)
                 -- Handling En Passant
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn and RankIndex(targetSquare) -
                     RankIndex(startSquare) == 2 then
-                    Game.epFile = FileIndex(targetSquare)
+                    Game.epFile = FileIndex(targetSquare) + 1
                 else
                     Game.epFile = nil
                 end
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().Pawn then
+                    Game.fiftyCounter = 0
                     if Board.Square[targetSquare][1] == 0 and FileIndex(targetSquare) ~= FileIndex(startSquare) then
                         Board.Square[targetSquare - 8] = {0, false, false}
                         audio["enPassant"]:play()
@@ -111,7 +116,7 @@ function TryMakeMove(startSquare, targetSquare)
                 Board.Square[targetSquare][3] = true
                 table.insert(oldMoves, Move(startSquare, targetSquare))
                 Game:NextTurn()
-                Game.moves = Game.moves + 1
+                Game.fiftyCounter = Game.fiftyCounter + 1
             end
         end
         if Board.Square[targetSquare] ~= Board.Square[startSquare] then
