@@ -7,6 +7,8 @@ require 'BoardRepresentation'
 require 'Player'
 require 'FenUtility'
 require 'BoardUI'
+require 'LegalMoves'
+require 'Move'
 bit = require "bit"
 WIDTH = 960
 HEIGHT = 960

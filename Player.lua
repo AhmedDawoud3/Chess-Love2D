@@ -17,12 +17,12 @@ function HandleInput()
         HandleDragMovement(mousePos)
         -- elseif 
     end
-    print(currentState)
 end
 
 function HandlePieceSelection(mousePos)
     if love.mouse.isDown(1) then
         if TryGetSquareUnderMouse(mousePos) then
+            GenerateMoves()
             currentState = "DraggingPiece"
         end
     end
@@ -47,12 +47,26 @@ end
 
 function TryMakeMove(startSquare, targetSquare)
     if startSquare ~= targetSquare then
-        Board.Square[targetSquare] = Board.Square[startSquare]
-        Board.Square[targetSquare][2] = true
-        Board.Square[startSquare] = {0, false}
+        for i, v in ipairs(moves) do
+            if targetSquare == v.TargetSquare then
+                if Board.Square[targetSquare][1] ~= 0 then
+                    audio["capture"]:play()
+                else
+                    audio["normal"]:play()
+                end
+                Board.Square[targetSquare] = Board.Square[startSquare]
+                Board.Square[targetSquare][2] = true
+                Board.Square[startSquare] = {0, false, false}
+                Board.Square[targetSquare][3] = true
+            end
+        end
+        if Board.Square[targetSquare] ~= Board.Square[startSquare] then
+            Board.Square[startSquare][2] = true
+        end
     else
         Board.Square[targetSquare][2] = true
     end
+    moves = {}
     floatingPiece = nil
     currentState = "None"
 end

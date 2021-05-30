@@ -17,5 +17,19 @@ function Piece:init()
 end
 
 function Piece.IsColor(piece, color)
-    print(bit.band(piece, colorMask) == color)
+    return bit.band(piece, colorMask) == color
+end
+
+function Piece.IsSlidingPiece(piece)
+    return (bit.band(piece, 4) ~= 0)
+end
+
+function Piece.PieceType(piece)
+    return bit.band(piece, 7)
+end
+
+function Piece.SameColor(square1, square2)
+    piece1 = Board.Square[square1][1]
+    piece2 = Board.Square[square2][1]
+    return Piece.IsColor(piece1, Piece().White) == Piece.IsColor(piece2, Piece().White)
 end
