@@ -49,8 +49,8 @@ function Board:DisplayPieces()
 end
 
 function Board:DisplayLastMoves()
-    DrawSquare({0.78, 0.78, 0.24, 0.5}, {FileIndex(lastMove.StartSquare), RankIndex(lastMove.StartSquare)})
-    DrawSquare({0.78, 0.78, 0.24, 0.7}, {FileIndex(lastMove.TargetSquare), RankIndex(lastMove.TargetSquare)})
+    DrawSquare({0.78, 0.78, 0.24, 0.5}, {FileIndex(oldMoves[#oldMoves].StartSquare), RankIndex(oldMoves[#oldMoves].StartSquare)})
+    DrawSquare({0.78, 0.78, 0.24, 0.7}, {FileIndex(oldMoves[#oldMoves].TargetSquare), RankIndex(oldMoves[#oldMoves].TargetSquare)})
 end
 
 function Board:DisplayLegalMoves()

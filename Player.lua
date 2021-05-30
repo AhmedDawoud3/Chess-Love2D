@@ -109,7 +109,7 @@ function TryMakeMove(startSquare, targetSquare)
                 Board.Square[targetSquare][2] = true
                 Board.Square[startSquare] = {0, false, false}
                 Board.Square[targetSquare][3] = true
-                lastMove = Move(startSquare, targetSquare)
+                table.insert(oldMoves, Move(startSquare, targetSquare))
                 Game:NextTurn()
             end
         end

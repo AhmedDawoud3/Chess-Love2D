@@ -21,7 +21,7 @@ end
 
 function GameManager:Render()
     CreateGraphicalBoard()
-    if lastMove then
+    if #oldMoves > 0 then
         Board:DisplayLastMoves()
     end
     Game.Board:DisplayLegalMoves()
