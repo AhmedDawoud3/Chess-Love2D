@@ -56,4 +56,6 @@ end
 function Piece.Promote(promotion)
     Game.Board.Square[Game.promotionSquare][1] = promotion
     Game.promotionAvalible = false
+    table.remove(moveHistory, #moveHistory)
+    table.insert(moveHistory, CurrentFEN(Game.Board))
 end
