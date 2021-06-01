@@ -27,7 +27,7 @@ function GameManager:Render()
     Game.Board:DisplayLegalMoves()
     Game.Board:DisplayChecks()
     Game.Board:DisplayPieces()
-    
+    Game.Board:GetPiecePromotion()
 end
 
 Game = Class {}
@@ -42,6 +42,9 @@ function Game:init(board, turn, wlcstl, wrcstl, blcstl, brcstl, epFile)
     self.epFile = epFile
     self.plyCount = 1
     self.fiftyCounter = 0
+    self.promotionAvalible = false
+    self.promotionColor = nil
+    self.promotionSquare = nil
 end
 
 function Game:NextTurn()

@@ -48,6 +48,9 @@ function UndoMove()
         table.remove(oldMoves, #oldMoves)
         Game:NextTurn()
     end
+    if Game.promotionAvalible then
+        Game.promotionAvalible = false
+    end
 end
 
 function DistanceBetweenSquares(square1, square2, dist)

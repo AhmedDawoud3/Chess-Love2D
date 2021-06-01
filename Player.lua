@@ -20,7 +20,7 @@ function HandleInput()
 end
 
 function HandlePieceSelection(mousePos)
-    if love.mouse.isDown(1) then
+    if love.mouse.isDown(1) and not Game.promotionAvalible then
         if TryGetSquareUnderMouse(mousePos) then
             moves = GenerateMoves(selectedPieceSquare)
             moves = FilterMoves(moves, Game.turn)
@@ -48,6 +48,7 @@ function HandlePiecePlacement(mousePos)
 end
 
 function TryMakeMove(startSquare, targetSquare, DEPUG)
+    Game.promotionAvalible = false
     if startSquare ~= targetSquare then
         for i, v in ipairs(moves) do
             if targetSquare == v.TargetSquare then
@@ -84,6 +85,7 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                             audio["enPassant"]:play()
                         end
                     end
+
                 end
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
                     -- Set Castling to false
@@ -129,8 +131,19 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                 end
                 Game:NextTurn()
                 Game.fiftyCounter = Game.fiftyCounter + 1
+
+                if not DEPUG then
+                    if RankIndex(targetSquare) == 0 or RankIndex(targetSquare) == 7 then
+                        if Piece().PieceType(Board.Square[targetSquare][1]) == Piece().Pawn then
+                            Game.promotionAvalible = true
+                            Game.promotionColor = ((Piece().IsColor(Board.Square[targetSquare][1], Piece().White) )and Piece().Black) or Piece().White
+                            Game.promotionSquare = targetSquare
+                        end
+                    end
+                end
             end
         end
+
         if Board.Square[targetSquare] ~= Board.Square[startSquare] then
             Board.Square[startSquare][2] = true
         end

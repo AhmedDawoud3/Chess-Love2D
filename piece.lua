@@ -52,3 +52,8 @@ function Piece.ReverseColor(color)
     end
     return Piece().White
 end
+
+function Piece.Promote(promotion)
+    Game.Board.Square[Game.promotionSquare][1] = promotion
+    Game.promotionAvalible = false
+end
