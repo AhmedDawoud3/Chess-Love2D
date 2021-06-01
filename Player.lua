@@ -22,7 +22,9 @@ end
 function HandlePieceSelection(mousePos)
     if love.mouse.isDown(1) then
         if TryGetSquareUnderMouse(mousePos) then
-            moves = GenerateMoves()
+            moves = GenerateMoves(selectedPieceSquare)
+            moves = FilterMoves(moves, Game.turn)
+            -- moves = GetAllMoves('w' == Game.turn and Piece().White or Piece().Black)
             currentState = "DraggingPiece"
         end
     end
@@ -45,7 +47,7 @@ function HandlePiecePlacement(mousePos)
     TryMakeMove(selectedPieceSquare, targetSquare)
 end
 
-function TryMakeMove(startSquare, targetSquare)
+function TryMakeMove(startSquare, targetSquare, DEPUG)
     if startSquare ~= targetSquare then
         for i, v in ipairs(moves) do
             if targetSquare == v.TargetSquare then
@@ -53,12 +55,16 @@ function TryMakeMove(startSquare, targetSquare)
                     Game.plyCount = Game.plyCount + 1
                 end
                 if Board.Square[targetSquare][1] ~= 0 then
-                    audio["capture"]:stop()
-                    audio["capture"]:play()
+                    if not DEPUG then
+                        audio["capture"]:stop()
+                        audio["capture"]:play()
+                    end
                     Game.fiftyCounter = -1
                 else
-                    audio["normal"]:stop()
-                    audio["normal"]:play()
+                    if not DEPUG then
+                        audio["normal"]:stop()
+                        audio["normal"]:play()
+                    end
                 end
 
                 -- Handling En Passant
@@ -74,10 +80,11 @@ function TryMakeMove(startSquare, targetSquare)
                     local index = (Game.turn == 'w' and 1) or -1
                     if Board.Square[targetSquare][1] == 0 and FileIndex(targetSquare) ~= FileIndex(startSquare) then
                         Board.Square[targetSquare - 8 * index] = {0, false, false}
-                        audio["enPassant"]:play()
+                        if not DEPUG then
+                            audio["enPassant"]:play()
+                        end
                     end
                 end
-
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
                     -- Set Castling to false
                     if Piece().IsColor(Board.Square[startSquare][1], Piece().White) then
@@ -116,8 +123,10 @@ function TryMakeMove(startSquare, targetSquare)
                 Board.Square[targetSquare][2] = true
                 Board.Square[startSquare] = {0, false, false}
                 Board.Square[targetSquare][3] = true
-                table.insert(oldMoves, Move(startSquare, targetSquare))
-                table.insert(moveHistory, CurrentFEN(Game.Board))
+                if not DEPUG then
+                    table.insert(oldMoves, Move(startSquare, targetSquare))
+                    table.insert(moveHistory, CurrentFEN(Game.Board))
+                end
                 Game:NextTurn()
                 Game.fiftyCounter = Game.fiftyCounter + 1
             end
@@ -125,10 +134,25 @@ function TryMakeMove(startSquare, targetSquare)
         if Board.Square[targetSquare] ~= Board.Square[startSquare] then
             Board.Square[startSquare][2] = true
         end
+
+        if not DEPUG then
+            moves = {}
+            floatingPiece = nil
+            currentState = "None"
+        end
+        return true
     else
         Board.Square[targetSquare][2] = true
+        if not DEPUG then
+            moves = {}
+            floatingPiece = nil
+            currentState = "None"
+        end
+        return false
     end
-    moves = {}
-    floatingPiece = nil
-    currentState = "None"
+    if not DEPUG then
+        moves = {}
+        floatingPiece = nil
+        currentState = "None"
+    end
 end

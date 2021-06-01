@@ -10,23 +10,8 @@ function Move:init(StartSquare, TargetSquare)
 end
 
 function GenerateMoves(sq)
-    sq = sq or selectedPieceSquare
     _moves_ = {}
-    for file = 0, 7 do
-        for rank = 0, 7 do
-            numNorth = 7 - rank
-            numSouth = rank
-            numWest = file
-            numEast = 7 - file
-
-            squareIndex = rank * 8 + file
-
-            NumSquaresToEdge[squareIndex] = {numNorth, numSouth, numWest, numEast, math.min(numNorth, numWest),
-                                             math.min(numSouth, numEast), math.min(numNorth, numEast),
-                                             math.min(numSouth, numWest)}
-        end
-    end
-    local piece = Board.Square[sq][1]
+    local piece = Game.Board.Square[sq][1]
     local pieceType = Piece.PieceType(piece)
     local pieceCol = (Piece().IsColor(piece, Piece().White) and Piece().White) or Piece().Black
     local t = (pieceCol == Piece().White and 'w') or 'b'

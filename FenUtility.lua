@@ -135,14 +135,17 @@ function CurrentFEN(Board)
     -- En-Passant
     fen = fen .. " "
     epFile = Game.epFile
-    if epFile == 0 then
-        fen = fen .. '-'
+    if epFile then
+        if epFile == 0 then
+            fen = fen .. '-'
+        else
+            fileName = fileNames:sub(epFile, epFile)
+            epRank = (Game.turn == 'w') and 6 or 3
+            fen = fen .. fileName .. tostring(epRank)
+        end
     else
-        fileName = fileNames:sub(epFile, epFile)
-        epRank = (Game.turn == 'w') and 6 or 3
-        fen = fen .. fileName .. tostring(epRank)
+        fen = fen .. '-'
     end
-
     --  50 Move Counter
     fen = fen .. " "
     fen = fen .. tostring(Game.fiftyCounter)

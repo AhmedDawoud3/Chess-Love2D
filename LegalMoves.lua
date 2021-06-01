@@ -1,3 +1,33 @@
+function FilterMoves(moves_, col)
+    local originalFen = CurrentFEN()
+    legalMoves = {}
+    for i, v in ipairs(moves_) do
+        Game.Board:LoadPosition(originalFen)
+        TryMakeMove(v.StartSquare, v.TargetSquare, true)
+        if IsCheck((col == 'w' and Piece().White) or  Piece().Black) then
+        else
+            table.insert(legalMoves, v)
+        end
+    end
+    Game.Board:LoadPosition(originalFen)
+    return legalMoves
+end
+
+function GetAllMoves(col)
+    local allMoves = {}
+    for i, v in ipairs(Game.Board.Square) do
+        local sq = v[1]
+        if Piece().IsColor(sq, col) then
+            -- if sq == 10 then
+            local fMoves = GenerateMoves(i)
+            for j = 1, #fMoves do
+                allMoves[#allMoves + 1] = fMoves[j]
+            end
+        end
+    end
+    return allMoves
+end
+
 function PrecomputedMoveData()
     NumSquaresToEdge = {}
     for file = 0, 7 do
@@ -45,7 +75,7 @@ function CreatePawnMovement(square, pieceCol)
         end
 
         -- En passant
-        if Game.epFile and  Game.epFile  ~= 0 then
+        if Game.epFile and Game.epFile ~= 0 then
             if math.abs(FileIndex(square) + 1 - Game.epFile) == 1 then
                 local index = (Game.turn == 'w' and 1) or -1
                 if RankIndex(square) == 3.5 + 0.5 * -index then

@@ -25,7 +25,9 @@ function GameManager:Render()
         Board:DisplayLastMoves()
     end
     Game.Board:DisplayLegalMoves()
+    Game.Board:DisplayChecks()
     Game.Board:DisplayPieces()
+    
 end
 
 Game = Class {}
@@ -43,9 +45,9 @@ function Game:init(board, turn, wlcstl, wrcstl, blcstl, brcstl, epFile)
 end
 
 function Game:NextTurn()
-    if self.turn == 'w' then
-        self.turn = 'b'
+    if Game.turn == 'w' then
+        Game.turn = 'b'
     else
-        self.turn = 'w'
+        Game.turn = 'w'
     end
 end

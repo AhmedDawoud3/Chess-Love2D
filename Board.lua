@@ -22,6 +22,7 @@ function DrawSquare(col, pos)
     love.graphics.rectangle("fill", pos[1] * squareTileWidth, pos[2] * squareTileHeight, squareTileWidth,
         squareTileHeight)
     love.graphics.setColor(1, 1, 1, 1)
+    -- love.graphics.print(IndexFromCoord(pos[1], pos[2]), pos[1] * squareTileWidth, pos[2] * squareTileHeight)
 end
 Board = Class {}
 function Board:init()
@@ -49,17 +50,30 @@ function Board:DisplayPieces()
 end
 
 function Board:DisplayLastMoves()
-    DrawSquare({0.78, 0.78, 0.24, 0.5}, {FileIndex(oldMoves[#oldMoves].StartSquare), RankIndex(oldMoves[#oldMoves].StartSquare)})
-    DrawSquare({0.78, 0.78, 0.24, 0.7}, {FileIndex(oldMoves[#oldMoves].TargetSquare), RankIndex(oldMoves[#oldMoves].TargetSquare)})
+    DrawSquare({0.78, 0.78, 0.24, 0.5},
+        {FileIndex(oldMoves[#oldMoves].StartSquare), RankIndex(oldMoves[#oldMoves].StartSquare)})
+    DrawSquare({0.78, 0.78, 0.24, 0.7},
+        {FileIndex(oldMoves[#oldMoves].TargetSquare), RankIndex(oldMoves[#oldMoves].TargetSquare)})
 end
 
 function Board:DisplayLegalMoves()
     for i, v in ipairs(moves) do
-        -- print(FileIndex(v.TargetSquare), RankIndex(v.TargetSquare))
-        DrawSquare({0.8, 0.1, 0.2, 0.7}, {FileIndex(v.TargetSquare), RankIndex(v.TargetSquare)})
+        if v then
+            -- print(FileIndex(v.TargetSquare), RankIndex(v.TargetSquare))
+            DrawSquare({0.8, 0.1, 0.2, 0.7}, {FileIndex(v.TargetSquare), RankIndex(v.TargetSquare)})
+        end
     end
     if selectedPieceSquare and #moves > 0 then
         DrawSquare({1, 0.65, 0.2, 0.8}, {FileIndex(selectedPieceSquare), RankIndex(selectedPieceSquare)})
+    end
+end
+
+function Board:DisplayChecks()
+    if IsCheck(Piece().Black) then
+        DrawSquare({0.4, 0.8, 0.2, 0.7}, {FileIndex(IsCheck(Piece().Black)[2]), RankIndex(IsCheck(Piece().Black)[2])})
+    end
+    if IsCheck(Piece().White) then
+        DrawSquare({0.4, 0.8, 0.2, 0.7}, {FileIndex(IsCheck(Piece().White)[2]), RankIndex(IsCheck(Piece().White)[2])})
     end
 end
 

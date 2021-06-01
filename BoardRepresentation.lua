@@ -47,3 +47,47 @@ end
 function IsSquare(squareIndex)
     return squareIndex > 0 and squareIndex <= 64
 end
+
+function IsCheck(col)
+    local eCol = Piece().ReverseColor(col)
+    local t = (col == Piece().White and 'w') or 'b'
+    local changedTurn = false
+    local gamTurn = Game.turn
+    -- if not t == gameTurn then
+    --     Game.NextTurn()
+    --     changedTurn = true
+    -- end
+    for i, v in ipairs(Game.Board.Square) do
+        if v[1] ~= 0 then
+            if Piece.IsColor(v[1], eCol) then
+                local aMoves = GenerateMoves(i)
+                for j, o in ipairs(aMoves) do
+                    if Piece().PieceType(Game.Board.Square[o.TargetSquare][1]) == Piece().King then
+                        return {true, o.TargetSquare}
+                    end
+                end
+            end
+        end
+    end
+    Game.NextTurn()
+    for i, v in ipairs(Game.Board.Square) do
+        if v[1] ~= 0 then
+            if Piece.IsColor(v[1], eCol) then
+                local aMoves = GenerateMoves(i)
+                for j, o in ipairs(aMoves) do
+                    if Piece().PieceType(Game.Board.Square[o.TargetSquare][1]) == Piece().King then
+                        -- if changedTurn then
+                        --     Game.NextTurn()
+                        -- end
+                        Game.NextTurn()
+                        return {true, o.TargetSquare}
+                    end
+                end
+            end
+        end
+    end
+    -- if changedTurn then
+    Game.NextTurn()
+    -- end
+    return false
+end
