@@ -4,6 +4,10 @@ WIDTH = 960
 HEIGHT = 960
 squareTileWidth = WIDTH / 8
 squareTileHeight = HEIGHT / 8
+local queenShadow = 0
+local rookShadow = 0
+local knightShadow = 0
+local bishopShadow = 0
 
 function CreateGraphicalBoard()
     for file = 0, 7 do
@@ -80,14 +84,19 @@ function Board:GetPiecePromotion()
         local col = Game.promotionColor == Piece().White and Piece().Black or Piece().White
         local mouseX = love.mouse.getX()
         local mouseY = love.mouse.getY()
-
+        love.mouse.setCursor()
         love.graphics.setColor(0.1, 0.1, 0.1, 0.7)
         love.graphics.rectangle("fill", 0, 0, WIDTH, HEIGHT)
 
         -- Queen
-        love.graphics.setColor(((241 + 168) / 2) / 255, ((217 + 122) / 2) / 255, ((192 + 101) / 2) / 255, 1)
+        love.graphics.setColor(((241 + 168) / 2) / 255 + queenShadow / 50, ((217 + 122) / 2) / 255 + queenShadow / 50,
+            ((192 + 101) / 2) / 255 + queenShadow / 100, 1)
         love.graphics.rectangle("fill", 1 * squareTileWidth, 2 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2, 50, 50)
+        love.graphics.setColor(0, 0, 0, 0.7)
+        love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Queen, col)),
+            1 * squareTileWidth + squareTileWidth / 4 - queenShadow,
+            2 * squareTileHeight + squareTileHeight / 4 + queenShadow, 0, 1.5, 1.5)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Queen, col)),
             1 * squareTileWidth + squareTileWidth / 4, 2 * squareTileHeight + squareTileHeight / 4, 0, 1.5, 1.5)
@@ -97,13 +106,26 @@ function Board:GetPiecePromotion()
             squareTileHeight * 2, 50, 50)
         if CheckMouseCollision(mouseX, mouseY, squareTileWidth, 2 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2) then
-            Piece().Promote(bit.bor(Piece().Queen, col))
+            queenShadow = math.min(queenShadow + 1, 10)
+            love.mouse.setCursor((love.mouse.getSystemCursor("hand")))
+            if love.mouse.isDown(1) then
+                love.mouse.setCursor()
+                Piece().Promote(bit.bor(Piece().Queen, col))
+                queenShadow = 0
+            end
+        else
+            queenShadow = math.max(queenShadow - 1, 0)
         end
 
         -- Rook
-        love.graphics.setColor(((241 + 168) / 2) / 255, ((217 + 122) / 2) / 255, ((192 + 101) / 2) / 255, 1)
+        love.graphics.setColor(((241 + 168) / 2) / 255 + rookShadow / 50, ((217 + 122) / 2) / 255 + rookShadow / 50,
+            ((192 + 101) / 2) / 255 + rookShadow / 100, 1)
         love.graphics.rectangle("fill", 5 * squareTileWidth, 2 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2, 50, 50)
+        love.graphics.setColor(0, 0, 0, 0.7)
+        love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Rook, col)),
+            5 * squareTileWidth + squareTileWidth / 4 - rookShadow,
+            2 * squareTileHeight + squareTileHeight / 4 + rookShadow, 0, 1.5, 1.5)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Rook, col)),
             5 * squareTileWidth + squareTileWidth / 4, 2 * squareTileHeight + squareTileHeight / 4, 0, 1.5, 1.5)
@@ -113,13 +135,26 @@ function Board:GetPiecePromotion()
             squareTileHeight * 2, 50, 50)
         if CheckMouseCollision(mouseX, mouseY, 5 * squareTileWidth, 2 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2) then
-            Piece().Promote(bit.bor(Piece().Rook, col))
+            rookShadow = math.min(rookShadow + 1, 10)
+            love.mouse.setCursor((love.mouse.getSystemCursor("hand")))
+            if love.mouse.isDown(1) then
+                love.mouse.setCursor()
+                Piece().Promote(bit.bor(Piece().Rook, col))
+                rookShadow = 0
+            end
+        else
+            rookShadow = math.max(rookShadow - 1, 0)
         end
 
         -- Bishop
-        love.graphics.setColor(((241 + 168) / 2) / 255, ((217 + 122) / 2) / 255, ((192 + 101) / 2) / 255, 1)
+        love.graphics.setColor(((241 + 168) / 2) / 255 + bishopShadow / 50, ((217 + 122) / 2) / 255 + bishopShadow / 50,
+            ((192 + 101) / 2) / 255 + bishopShadow / 100, 1)
         love.graphics.rectangle("fill", 1 * squareTileWidth, 5 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2, 50, 50)
+        love.graphics.setColor(0, 0, 0, 0.7)
+        love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Bishop, col)),
+            1 * squareTileWidth + squareTileWidth / 4 - bishopShadow,
+            5 * squareTileHeight + squareTileHeight / 4 + bishopShadow, 0, 1.5, 1.5)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Bishop, col)),
             1 * squareTileWidth + squareTileWidth / 4, 5 * squareTileHeight + squareTileHeight / 4, 0, 1.5, 1.5)
@@ -129,13 +164,26 @@ function Board:GetPiecePromotion()
             squareTileHeight * 2, 50, 50)
         if CheckMouseCollision(mouseX, mouseY, squareTileWidth, 5 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2) then
-            Piece().Promote(bit.bor(Piece().Bishop, col))
+            bishopShadow = math.min(bishopShadow + 1, 10)
+            love.mouse.setCursor((love.mouse.getSystemCursor("hand")))
+            if love.mouse.isDown(1) then
+                love.mouse.setCursor()
+                bishopShadow = 0
+                Piece().Promote(bit.bor(Piece().Bishop, col))
+            end
+        else
+            bishopShadow = math.max(bishopShadow - 1, 0)
         end
 
         -- Knight
-        love.graphics.setColor(((241 + 168) / 2) / 255, ((217 + 122) / 2) / 255, ((192 + 101) / 2) / 255, 1)
+        love.graphics.setColor(((241 + 168) / 2) / 255 + knightShadow / 50, ((217 + 122) / 2) / 255 + knightShadow / 50,
+            ((192 + 101) / 2) / 255 + knightShadow / 100, 1)
         love.graphics.rectangle("fill", 5 * squareTileWidth, 5 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2, 50, 50)
+        love.graphics.setColor(0, 0, 0, 0.7)
+        love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Knight, col)),
+            5 * squareTileWidth + squareTileWidth / 4 - knightShadow,
+            5 * squareTileHeight + squareTileHeight / 4 + knightShadow, 0, 1.5, 1.5)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(Loader.piecesTexture, Loader:GetPiece(bit.bor(Piece().Knight, col)),
             5 * squareTileWidth + squareTileWidth / 4, 5 * squareTileHeight + squareTileHeight / 4, 0, 1.5, 1.5)
@@ -146,7 +194,15 @@ function Board:GetPiecePromotion()
         love.graphics.setLineWidth(1)
         if CheckMouseCollision(mouseX, mouseY, 5 * squareTileWidth, 5 * squareTileHeight, squareTileWidth * 2,
             squareTileHeight * 2) then
-            Piece().Promote(bit.bor(Piece().Knight, col))
+            knightShadow = math.min(knightShadow + 1, 10)
+            love.mouse.setCursor((love.mouse.getSystemCursor("hand")))
+            if love.mouse.isDown(1) then
+                love.mouse.setCursor()
+                Piece().Promote(bit.bor(Piece().Knight, col))
+                knightShadow = 0
+            end
+        else
+            knightShadow = math.max(knightShadow - 1, 0)
         end
 
     end
@@ -174,7 +230,7 @@ function Board:LoadPosition(fen)
 end
 
 function CheckMouseCollision(x, y, x2, y2, width, height)
-    if x < x2 + width and x > x2 and y < y2 + height and y > y2 and love.mouse.isDown(1) then
+    if x < x2 + width and x > x2 and y < y2 + height and y > y2 then
         return true
     end
     return false
