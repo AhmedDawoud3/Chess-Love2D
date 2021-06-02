@@ -180,3 +180,25 @@ function Split(s, delimiter)
     end
     return result
 end
+
+function CheckFEN(fen)
+    -- 81/5k1p/1p1pRp2/p2P4/P1P3Pp/1P4bP/6K1/8 w - -
+    local sections = Split(fen, ' ')
+    if #sections < 2 then
+        return false
+    end
+    for i = 1, #sections[1] do
+        local symbol = sections[1]:sub(i, i)
+        if tonumber(symbol) ~= nil then
+            if tonumber(symbol) > 8 then
+            end
+        else
+            if symbol ~= '/' and symbol ~= 'k' and symbol ~= 'K' and symbol ~= 'b' and symbol ~= 'B' and symbol ~= 'p' and
+                symbol ~= 'P' and symbol ~= 'r' and symbol ~= 'R' and symbol ~= 'q' and symbol ~= 'Q' and symbol ~= 'n' and
+                symbol ~= 'N' then
+                return false
+            end
+        end
+    end
+    return true
+end

@@ -82,6 +82,7 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                     if Board.Square[targetSquare][1] == 0 and FileIndex(targetSquare) ~= FileIndex(startSquare) then
                         Board.Square[targetSquare - 8 * index] = {0, false, false}
                         if not DEPUG then
+                            audio["enPassant"]:stop()
                             audio["enPassant"]:play()
                         end
                     end

@@ -17,6 +17,18 @@ end
 
 function GameManager:Update(dt)
     Player:Update(dt)
+
+    if love.keyboard.isDown('c') and love.keyboard.isDown('lctrl') then
+        love.system.setClipboardText(CurrentFEN(Game.Board))
+    elseif love.keyboard.isDown('v') and love.keyboard.isDown('lctrl') then
+        pastedFen = love.system.getClipboardText()
+        if CheckFEN(pastedFen) then
+            Game.Board:LoadPosition(pastedFen)
+            oldMoves = {}
+            lastMove = nil
+            Game.promotionAvalible = nil
+        end
+    end
 end
 
 function GameManager:Render()
