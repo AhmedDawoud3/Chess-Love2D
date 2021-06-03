@@ -10,8 +10,8 @@ Fonts = {
     ["Big"] = love.graphics.newFont('Fonts/font0.ttf', 100),
     ["small"] = love.graphics.newFont('Fonts/font0.ttf', 20),
     ["smallest"] = love.graphics.newFont('Fonts/font0.ttf', 15),
-    ["Secondary"] = love.graphics.newFont('Fonts/Font1.ttf', 60),
-    ["SecondarySmall"] = love.graphics.newFont('Fonts/Font1.ttf', 35)
+    ["Secondary"] = love.graphics.newFont('Fonts/font1.ttf', 60),
+    ["SecondarySmall"] = love.graphics.newFont('Fonts/font1.ttf', 35)
 }
 function GameManager:init()
     Loader = Loader()

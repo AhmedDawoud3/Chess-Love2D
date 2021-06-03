@@ -1,6 +1,6 @@
-Class = require "utils/Class"
-require "board"
-require "Piece"
+Class = require "utils/class"
+require "Board"
+require "piece"
 require 'loader'
 require "gameManager"
 require 'BoardRepresentation'
