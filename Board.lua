@@ -86,7 +86,7 @@ function Board:GetPiecePromotion()
         local mouseY = love.mouse.getY()
         love.mouse.setCursor()
         love.graphics.setColor(0.1, 0.1, 0.1, 0.7)
-        love.graphics.rectangle("fill", 0, 0, WIDTH, HEIGHT)
+        love.graphics.rectangle("fill", 0, 0, 960, 960)
 
         -- Queen
         love.graphics.setColor(((241 + 168) / 2) / 255 + queenShadow / 50, ((217 + 122) / 2) / 255 + queenShadow / 50,
