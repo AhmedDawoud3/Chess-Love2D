@@ -9,8 +9,9 @@ require 'FenUtility'
 require 'BoardUI'
 require 'LegalMoves'
 require 'Move'
+require 'PlayerContrals'
 bit = require "bit"
-WIDTH = 960
+WIDTH = 1280
 HEIGHT = 960
 function love.load()
     love.window.setMode(WIDTH, HEIGHT)
@@ -24,12 +25,4 @@ end
 
 function love.draw()
     GameManager:Render()
-end
-
-function love.keypressed(key)
-    if key == 'escape' then
-        love.window.close()
-    elseif key == 'z' then
-        UndoMove()
-    end
 end

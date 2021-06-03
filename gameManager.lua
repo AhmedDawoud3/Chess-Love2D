@@ -5,7 +5,14 @@ audio = {
     ["capture"] = love.audio.newSource('audio/capture.wav', "static"),
     ["enPassant"] = love.audio.newSource('audio/enPassant.wav', "static")
 }
-
+Fonts = {
+    ["main"] = love.graphics.newFont('Fonts/font0.ttf', 40),
+    ["Big"] = love.graphics.newFont('Fonts/font0.ttf', 100),
+    ["small"] = love.graphics.newFont('Fonts/font0.ttf', 20),
+    ["smallest"] = love.graphics.newFont('Fonts/font0.ttf', 15),
+    ["Secondary"] = love.graphics.newFont('Fonts/Font1.ttf', 60),
+    ["SecondarySmall"] = love.graphics.newFont('Fonts/Font1.ttf', 35)
+}
 function GameManager:init()
     Loader = Loader()
     Board = Board()
@@ -18,20 +25,10 @@ end
 function GameManager:Update(dt)
     Player:Update(dt)
 
-    if love.keyboard.isDown('c') and love.keyboard.isDown('lctrl') then
-        love.system.setClipboardText(CurrentFEN(Game.Board))
-    elseif love.keyboard.isDown('v') and love.keyboard.isDown('lctrl') then
-        pastedFen = love.system.getClipboardText()
-        if CheckFEN(pastedFen) then
-            Game.Board:LoadPosition(pastedFen)
-            oldMoves = {}
-            lastMove = nil
-            Game.promotionAvalible = nil
-        end
-    end
 end
 
 function GameManager:Render()
+    PlayerContrals:Render()
     CreateGraphicalBoard()
     if #oldMoves > 0 then
         Board:DisplayLastMoves()
