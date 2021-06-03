@@ -16,6 +16,8 @@ HEIGHT = 960
 function love.load()
     love.window.setMode(WIDTH, HEIGHT)
     love.window.setTitle("Chess")
+    imageData = love.image.newImageData('Icons/512px.png')
+    success = love.window.setIcon(imageData);
     GameManager = GameManager()
 end
 
