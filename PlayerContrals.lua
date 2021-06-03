@@ -30,8 +30,11 @@ function PlayerContrals:Render()
 
     -- Copy Fen
     love.graphics.setColor(0.25, 0.25, 0.25, 1)
-    if CheckMouseCollision(love.mouse.getX(), love.mouse.getY(), 990, 750 - 430, 100, 40) then
+    if CheckMouseCollision(love.mouse.getX(), love.mouse.getY(), 990, 750 - 430, 100, 40) and not Game.promotionAvalible then
         love.graphics.setColor(0.45, 0.45, 0.45, 1)
+    end
+    if Game.promotionAvalible then
+        love.graphics.setColor(0.15, 0.15, 0.15, 1)
     end
     love.graphics.rectangle('fill', 990, 320, 120, 40)
     love.graphics.setColor(1, 1, 1, 1)
@@ -44,7 +47,7 @@ function PlayerContrals:Render()
     if CheckMouseCollision(love.mouse.getX(), love.mouse.getY(), 1130, 320, 130, 40) then
         love.graphics.setColor(0.45, 0.45, 0.45, 1)
     end
-    
+
     love.graphics.rectangle('fill', 1130, 320, 130, 40)
     love.graphics.setColor(1, 1, 1, 1)
     love.graphics.print('Paste Game', 1140, 755 - 430)
@@ -82,7 +85,8 @@ function love.mousepressed(x, y, button, istouch, presses)
         end
 
         -- Copy Fen
-        if CheckMouseCollision(love.mouse.getX(), love.mouse.getY(), 990, 750 - 430, 100, 40) then
+        if CheckMouseCollision(love.mouse.getX(), love.mouse.getY(), 990, 750 - 430, 100, 40) and
+            not Game.promotionAvalible then
             love.system.setClipboardText(CurrentFEN(Game.Board))
             gameCopied = 1
         end
