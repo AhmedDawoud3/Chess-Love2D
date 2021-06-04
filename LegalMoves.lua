@@ -17,15 +17,21 @@ function GetAllMoves(col)
     local allMoves = {}
     for i, v in ipairs(Game.Board.Square) do
         local sq = v[1]
-        if Piece().IsColor(sq, col) then
-            -- if sq == 10 then
-            local fMoves = GenerateMoves(i)
-            for j = 1, #fMoves do
-                allMoves[#allMoves + 1] = fMoves[j]
+        if sq ~= 0 then
+            if Piece().IsColor(sq, col) then
+                -- if sq == 10 then
+                local fMoves = GenerateMoves(i)
+                for j = 1, #fMoves do
+                    allMoves[#allMoves + 1] = fMoves[j]
+                end
             end
         end
     end
     return allMoves
+end
+
+function GetAllLegalMoves(col)
+    return FilterMoves(GetAllMoves(col), col)
 end
 
 function PrecomputedMoveData()

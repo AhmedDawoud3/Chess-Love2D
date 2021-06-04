@@ -36,14 +36,14 @@ function GenerateMoves(sq)
 end
 
 function UndoMove()
-    if #moveHistory < 2 then
+    if #moveHistory < 3 then
         Game.Board:LoadStartPosition()
         moves = {}
         NumSquaresToEdge = {}
         oldMoves = {}
         moveHistory = {}
     else
-        Game.Board:LoadPosition(moveHistory[#moveHistory - 1])
+        Game.Board:LoadPosition(moveHistory[#moveHistory - 2])
         table.remove(moveHistory, #moveHistory)
         table.remove(oldMoves, #oldMoves)
         Game:NextTurn()

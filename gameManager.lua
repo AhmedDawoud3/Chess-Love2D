@@ -24,7 +24,12 @@ end
 
 function GameManager:Update(dt)
     Player:Update(dt)
-
+    if Game.turn == 'b' and not Game.promotionAvalible then
+        ChooseComputerMoves()
+    end
+    if selectedPieceSquare and currentState == 'DraggingPiece' then
+        Game.Board.Square[selectedPieceSquare][2] = false
+    end
 end
 
 function GameManager:Render()
