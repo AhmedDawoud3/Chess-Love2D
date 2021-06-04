@@ -190,10 +190,8 @@ function CheckFEN(fen)
     for i = 1, #sections[1] do
         local symbol = sections[1]:sub(i, i)
         if tonumber(symbol) ~= nil then
-            if tonumber(symbol) > 8 then
-            end
         else
-            if symbol ~= '/' and symbol ~= 'k' and symbol ~= 'K' and symbol ~= 'b' and symbol ~= 'B' and symbol ~= 'p' and
+            if symbol == '(' and symbol == ')' and symbol ~= '/' and symbol ~= 'k' and symbol ~= 'K' and symbol ~= 'b' and symbol ~= 'B' and symbol ~= 'p' and
                 symbol ~= 'P' and symbol ~= 'r' and symbol ~= 'R' and symbol ~= 'q' and symbol ~= 'Q' and symbol ~= 'n' and
                 symbol ~= 'N' then
                 return false
