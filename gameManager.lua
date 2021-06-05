@@ -1,5 +1,5 @@
 GameManager = Class {}
-
+time = 0
 audio = {
     ["normal"] = love.audio.newSource('audio/normal.wav', "static"),
     ["capture"] = love.audio.newSource('audio/capture.wav', "static"),
@@ -20,13 +20,17 @@ function GameManager:init()
     Game.Board:LoadStartPosition()
     -- Board.Square[16] = {bit.bor(Piece().White, Piece().Knight), true}
     Player = Player()
+    -- print(MoveGenerationTest(1))
+    -- print(MoveGenerationTest(2))
+    -- print(MoveGenerationTest(3))
 end
 
 function GameManager:Update(dt)
+    time = time + dt
     Player:Update(dt)
-    if Game.turn == 'b' and not Game.promotionAvalible then
-        ChooseComputerMoves()
-    end
+    -- if Game.turn == 'b' and not Game.promotionAvalible then
+    --     ChooseComputerMoves()
+    -- end
     if selectedPieceSquare and currentState == 'DraggingPiece' then
         Game.Board.Square[selectedPieceSquare][2] = false
     end
