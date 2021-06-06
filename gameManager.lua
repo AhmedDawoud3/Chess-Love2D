@@ -7,7 +7,7 @@ audio = {
     ["enPassant"] = love.audio.newSource('audio/enPassant.wav', "static")
 }
 Fonts = {
-    ["main"] = love.graphics.newFont('Fonts/font0.ttf', 40),
+    ["main"] = love.graphics.newFont('Fonts/font0.ttf', 35),
     ["Big"] = love.graphics.newFont('Fonts/font0.ttf', 100),
     ["small"] = love.graphics.newFont('Fonts/font0.ttf', 20),
     ["smallest"] = love.graphics.newFont('Fonts/font0.ttf', 15),

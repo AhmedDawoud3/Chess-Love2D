@@ -1,11 +1,14 @@
 local socket = require 'socket'
 
 function ChooseComputerMoves()
-    local allMoves = GetAllLegalMoves(((Game.turn == 'w') and Piece().White) or Piece().Black)
-    if #allMoves > 0 then
-        local RandomMove = math.random(1, #allMoves)
-        MakeComputerMove(allMoves[RandomMove].StartSquare, allMoves[RandomMove].TargetSquare)
+    -- local allMoves = GetAllLegalMoves(((Game.turn == 'w') and Piece().White) or Piece().Black)
+    -- if #allMoves > 0 then
+    -- local RandomMove = math.random(1, #allMoves)
+    searchedMove = Search(2)[2]
+    if searchedMove then
+        MakeComputerMove(searchedMove.StartSquare, searchedMove.TargetSquare)
     end
+    -- end
 end
 
 function MoveGenerationTest(depth)

@@ -11,6 +11,8 @@ require 'LegalMoves'
 require 'Move'
 require 'PlayerContrals'
 require 'ComputerMoves'
+require "AI/Evaluation"
+require "AI/Search"
 bit = require "bit"
 WIDTH = 1280
 HEIGHT = 960

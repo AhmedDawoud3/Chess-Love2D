@@ -9,6 +9,17 @@ function PlayerContrals:Render()
     love.graphics.setColor(Game.turn == 'w' and 1 or 0, Game.turn == 'w' and 1 or 0, Game.turn == 'w' and 1 or 0, 1)
     love.graphics.printf((Game.turn == 'w' and 'White' or 'Black') .. " To Move", 980, 50, love.graphics.getWidth())
 
+    if Evaluate() > 0 then
+        love.graphics.setColor(0.43, 0.89, 0.48, 1)
+    elseif Evaluate() < 0 then 
+        love.graphics.setColor(0.83, 0.19, 0.18, 1)
+    else
+        love.graphics.setColor(1,1,1, 1)
+    end
+
+    love.graphics.setFont(Fonts['main'])
+    love.graphics.print("Evaluation: " .. Evaluate(), 980, 400)
+
     -- Undo
     love.graphics.setColor(0.25, 0.25, 0.25, 1)
     if CheckMouseCollision(love.mouse.getX(), love.mouse.getY(), 990, 750, 100, 40) then
