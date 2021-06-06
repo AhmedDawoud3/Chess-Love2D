@@ -53,16 +53,17 @@ function IsCheck(col)
     local t = (col == Piece().White and 'w') or 'b'
     local changedTurn = false
     local gamTurn = Game.turn
-    -- if not t == gameTurn then
-    --     Game.NextTurn()
-    --     changedTurn = true
-    -- end
-    for i, v in ipairs(Game.Board.Square) do
+    local pType = Piece().PieceType
+    local pCol = Piece.IsColor
+    local gen_moves = GenerateMoves
+    local gmBoard =Game.Board 
+
+    for i, v in ipairs(gmBoard.Square) do
         if v[1] ~= 0 then
-            if Piece.IsColor(v[1], eCol) then
-                local aMoves = GenerateMoves(i)
+            if pCol(v[1], eCol) then
+                local aMoves = gen_moves(i)
                 for j, o in ipairs(aMoves) do
-                    if Piece().PieceType(Game.Board.Square[o.TargetSquare][1]) == Piece().King then
+                    if pType(gmBoard.Square[o.TargetSquare][1]) == Piece().King then
                         return {true, o.TargetSquare}
                     end
                 end
@@ -70,15 +71,12 @@ function IsCheck(col)
         end
     end
     Game.NextTurn()
-    for i, v in ipairs(Game.Board.Square) do
+    for i, v in ipairs(gmBoard.Square) do
         if v[1] ~= 0 then
-            if Piece.IsColor(v[1], eCol) then
-                local aMoves = GenerateMoves(i)
+            if pCol(v[1], eCol) then
+                local aMoves = gen_moves(i)
                 for j, o in ipairs(aMoves) do
-                    if Piece().PieceType(Game.Board.Square[o.TargetSquare][1]) == Piece().King then
-                        -- if changedTurn then
-                        --     Game.NextTurn()
-                        -- end
+                    if pType(gmBoard.Square[o.TargetSquare][1]) == Piece().King then
                         Game.NextTurn()
                         return {true, o.TargetSquare}
                     end
@@ -86,8 +84,28 @@ function IsCheck(col)
             end
         end
     end
-    -- if changedTurn then
     Game.NextTurn()
-    -- end
+
     return false
+end
+
+function CurrentlyInCheck(col)
+    local pType = Piece().PieceType
+    local eCol = Piece().ReverseColor(col)
+    local pCol = Piece.IsColor
+    Game.NextTurn()
+    for i, v in ipairs(Game.Board.Square) do
+        if v[1] ~= 0 and pType(v[1]) ~= Piece().King then
+            if pCol(v[1], eCol) then
+                local aMoves = GenerateMoves(i)
+                for j, o in ipairs(aMoves) do
+                    if pType(Game.Board.Square[o.TargetSquare][1]) == Piece().King then
+                        Game.NextTurn()
+                        return {true, o.TargetSquare}
+                    end
+                end
+            end
+        end
+    end
+    Game.NextTurn()
 end

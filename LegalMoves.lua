@@ -1,28 +1,34 @@
 function FilterMoves(moves_, col)
     local originalFen = CurrentFEN()
-    legalMoves = {}
+    local checkMate = IsCheck
+    local legalMoves = {}
+    local trimkmove = TryMakeMove
+    local gmBoard = Game.Board
+    local pec = Piece()
     for i, v in ipairs(moves_) do
-        Game.Board:LoadPosition(originalFen)
-        TryMakeMove(v.StartSquare, v.TargetSquare, true)
-        -- local begin = os.clock()
-        if IsCheck((col == 'w' and Piece().White) or Piece().Black) then
+        local begin = os.clock()
+        gmBoard:LoadPosition(originalFen)
+        trimkmove(v.StartSquare, v.TargetSquare, true)
+        local begin = os.clock()
+        if checkMate((col == 'w' and pec.White) or pec.Black) then
         else
             table.insert(legalMoves, v)
         end
-        -- print("Checked for check in " .. string.format("Time: %.2f milliseconds\n", ((os.clock() - begin) * 1000)))
+        -- print("checkMate " .. string.format("Time: %f milliseconds\n", ((os.clock() - begin) * 1000)))
     end
-    Game.Board:LoadPosition(originalFen)
+    gmBoard:LoadPosition(originalFen)
     return legalMoves
 end
 
 function GetAllMoves(col)
     local allMoves = {}
+    local isCLR = Piece().IsColor
+    local genMoves = GenerateMoves
     for i, v in ipairs(Game.Board.Square) do
         local sq = v[1]
         if sq ~= 0 then
-            if Piece().IsColor(sq, col) then
-                -- if sq == 10 then
-                local fMoves = GenerateMoves(i)
+            if isCLR(sq, col) then
+                local fMoves = genMoves(i)
                 for j = 1, #fMoves do
                     allMoves[#allMoves + 1] = fMoves[j]
                 end
@@ -229,27 +235,32 @@ function CreateQueenMovement(square, pieceCol)
     local pRank = RankIndex(square)
     local pFile = FileIndex(square)
 
+    local isCLR = Piece().IsColor
+    local SameColor = Piece().SameColor
+    local CLRSQR = IsClearSquare
+    local isSQR = IsSquare
+
     for i = -1, 1, 2 do
         for k = 1, 7 do
             local sq = square + i * k
-            if RankIndex(sq) == pRank and IsSquare(sq) then
-                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+            if RankIndex(sq) == pRank and isSQR(sq) then
+                if isCLR(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
                     break
                 end
                 table.insert(moves_, Move(square, sq))
-                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                if isCLR(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
                     break
                 end
             end
         end
         for k = 1, 7 do
             local sq = square + i * (k * 8)
-            if FileIndex(sq) == pFile and IsSquare(sq) then
-                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+            if FileIndex(sq) == pFile and isSQR(sq) then
+                if isCLR(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
                     break
                 end
                 table.insert(moves_, Move(square, sq))
-                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                if isCLR(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
                     break
                 end
             end
@@ -258,12 +269,12 @@ function CreateQueenMovement(square, pieceCol)
 
     for i = -1, 1, 2 do
         for j = 1, 8 do
-            if IsSquare(square + i * j * 9) then
-                if Piece.SameColor(square, square + i * j * 9) then
+            if isSQR(square + i * j * 9) then
+                if SameColor(square, square + i * j * 9) then
                     break
                 else
                     table.insert(moves_D, Move(square, square + i * j * 9))
-                    if not Piece.SameColor(square, square + i * j * 9) and not IsClearSquare(square + i * j * 9) then
+                    if not SameColor(square, square + i * j * 9) and not CLRSQR(square + i * j * 9) then
                         break
                     end
                 end
@@ -272,12 +283,12 @@ function CreateQueenMovement(square, pieceCol)
             end
         end
         for j = 1, 8 do
-            if IsSquare(square + i * j * 7) then
-                if Piece.SameColor(square, square + i * j * 7) then
+            if isSQR(square + i * j * 7) then
+                if SameColor(square, square + i * j * 7) then
                     break
                 else
                     table.insert(moves_D, Move(square, square + i * j * 7))
-                    if not Piece.SameColor(square, square + i * j * 7) and not IsClearSquare(square + i * j * 7) then
+                    if not SameColor(square, square + i * j * 7) and not CLRSQR(square + i * j * 7) then
                         break
                     end
                 end

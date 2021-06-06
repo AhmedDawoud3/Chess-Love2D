@@ -30,6 +30,9 @@ end
 Board = Class {}
 function Board:init()
     self.Square = {}
+    self.LightPieces = {}
+    self.DarkPieces = {}
+    self.kingSquare = {}
     for i = 1, 64 do
         self.Square[i] = {0, false, true}
     end
@@ -214,12 +217,29 @@ end
 
 function Board:LoadPosition(fen)
     loadedPosition = PositionFromFen(fen)
-
+    Game.Board.LightPieces = {}
+    Game.Board.DarkPieces = {}
+    local pec = Piece()
+    local isCLR = pec.IsColor
+    local pTYPE = pec.PieceType
     for squareIndex = 1, 64 do
         piece = loadedPosition.squares[squareIndex]
         Game.Board.Square[squareIndex][1] = piece
         Game.Board.Square[squareIndex][2] = true
         Game.Board.Square[squareIndex][3] = false
+        if piece ~= 0 then
+            if isCLR(piece, pec.White) then
+                table.insert(Game.Board.LightPieces, squareIndex)
+                if pTYPE(piece) == pec.King then
+                    Game.Board.kingSquare['w'] = squareIndex
+                end
+            else
+                table.insert(Game.Board.DarkPieces, squareIndex)
+                if pTYPE(piece) == pec.King then
+                    Game.Board.kingSquare['b'] = squareIndex
+                end
+            end
+        end
     end
     Game.turn = loadedPosition.turn
     Game.wkcstl = loadedPosition.whiteCastleKingside

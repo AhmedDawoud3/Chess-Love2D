@@ -1,16 +1,18 @@
-pieceTypeFromSymbol = {
-    ['k'] = Piece().King,
-    ['p'] = Piece().Pawn,
-    ['n'] = Piece().Knight,
-    ['b'] = Piece().Bishop,
-    ['r'] = Piece().Rook,
-    ['q'] = Piece().Queen
-}
+
 
 startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 function PositionFromFen(fen)
+    local pec = Piece()
     loadedPositionInfo = LoadedPositionInfo()
+    pieceTypeFromSymbol = {
+        ['k'] = pec.King,
+        ['p'] = pec.Pawn,
+        ['n'] = pec.Knight,
+        ['b'] = pec.Bishop,
+        ['r'] = pec.Rook,
+        ['q'] = pec.Queen
+    }
     local sections = Split(fen, ' ')
     local file = 0
     local rank = 7
@@ -23,7 +25,7 @@ function PositionFromFen(fen)
             if tonumber(symbol) ~= nil then
                 file = file + tonumber(symbol)
             else
-                pieceColour = ((string.upper(symbol) == symbol) and Piece().White) or Piece().Black
+                pieceColour = ((string.upper(symbol) == symbol) and pec.White) or pec.Black
                 pieceType = pieceTypeFromSymbol[string.lower(symbol)]
                 loadedPositionInfo.squares[rank * 8 + file + 1] = bit.bor(pieceColour, pieceType)
                 file = file + 1
@@ -68,6 +70,9 @@ end
 
 function CurrentFEN(Board)
     local fen = ''
+    local pec = Piece()
+    local isCLR = pec.IsColor
+    local pcTYPE = pec.PieceType
     for rank = 7, 0, -1 do
         numEmptyFiles = 0
         for file = 0, 7 do
@@ -78,20 +83,20 @@ function CurrentFEN(Board)
                     fen = fen .. tostring(numEmptyFiles)
                     numEmptyFiles = 0
                 end
-                isBlack = Piece().IsColor(piece, Piece().Black)
-                pieceType = Piece().PieceType(piece)
+                isBlack = isCLR(piece, pec.Black)
+                pieceType = pcTYPE(piece)
                 pieceChar = " "
-                if pieceType == Piece().Rook then
+                if pieceType == pec.Rook then
                     pieceChar = 'R'
-                elseif pieceType == Piece().Knight then
+                elseif pieceType == pec.Knight then
                     pieceChar = 'N'
-                elseif pieceType == Piece().Bishop then
+                elseif pieceType == pec.Bishop then
                     pieceChar = 'B'
-                elseif pieceType == Piece().Queen then
+                elseif pieceType == pec.Queen then
                     pieceChar = 'Q'
-                elseif pieceType == Piece().King then
+                elseif pieceType == pec.King then
                     pieceChar = 'K'
-                elseif pieceType == Piece().Pawn then
+                elseif pieceType == pec.Pawn then
                     pieceChar = 'P'
                 end
                 fen = fen .. ((isBlack and string.lower(pieceChar)) or pieceChar)

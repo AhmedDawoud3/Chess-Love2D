@@ -91,10 +91,12 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
                     -- Set Castling to false
                     if Piece().IsColor(Board.Square[startSquare][1], Piece().White) then
+                        Game.Board.kingSquare['w'] = targetSquare
                         Game.wqcstl = false
                         Game.wkcstl = false
                     end
                     if Piece().IsColor(Board.Square[startSquare][1], Piece().Black) then
+                        Game.Board.kingSquare['b'] = targetSquare
                         Game.bqcstl = false
                         Game.bkcstl = false
                     end
@@ -104,6 +106,26 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                         if Piece.PieceType(Board.Square[startSquare - 4][1]) == Piece().Rook and
                             not Board.Square[startSquare - 4][3] and not Board.Square[startSquare][3] then
                             if RankIndex(targetSquare) == 0 or RankIndex(targetSquare) == 7 then
+                                foundPieces = false
+                                for i_, v_ in ipairs(Game.Board.LightPieces) do
+                                    if v_ == startSquare - 4 then
+                                        table.remove(Game.Board.LightPieces, i_)
+                                        table.insert(Game.Board.DarkPieces, v)
+                                        foundPieces = true
+                                        break
+                                    end
+                                end
+                                if not foundPieces then
+                                    for i_, v_ in ipairs(Game.Board.DarkPieces) do
+                                        if v_ == startSquare - 4 then
+                                            table.remove(Game.Board.DarkPieces, i_)
+                                            table.insert(Game.Board.LightPieces, v)
+                                            foundPieces = true
+                                            break
+                                        end
+                                    end
+                                end
+
                                 Board.Square[startSquare - 1] = Board.Square[startSquare - 4]
                                 Board.Square[startSquare - 4] = {0, false, false}
                             end
@@ -115,9 +137,53 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                         if Piece.PieceType(Board.Square[startSquare + 3][1]) == Piece().Rook and
                             not Board.Square[startSquare + 3][3] and not Board.Square[startSquare][3] then
                             if RankIndex(targetSquare) == 0 or RankIndex(targetSquare) == 7 then
-                                Board.Square[startSquare + 1] = Board.Square[startSquare + 3]
-                                Board.Square[startSquare + 3] = {0, false, false}
+                                if not DEPUG then
+                                    foundPieces = false
+                                    for i_, v_ in ipairs(Game.Board.LightPieces) do
+                                        if v_ == startSquare + 3 then
+                                            table.remove(Game.Board.LightPieces, i_)
+                                            table.insert(Game.Board.DarkPieces, v)
+                                            foundPieces = true
+                                            break
+                                        end
+                                    end
+                                    if not foundPieces then
+                                        for i_, v_ in ipairs(Game.Board.DarkPieces) do
+                                            if v_ == startSquare + 3 then
+                                                table.remove(Game.Board.DarkPieces, i_)
+                                                table.insert(Game.Board.LightPieces, v)
+                                                foundPieces = true
+                                                break
+                                            end
+                                        end
+                                    end
+                                    Board.Square[startSquare + 1] = Board.Square[startSquare + 3]
+                                    Board.Square[startSquare + 3] = {0, false, false}
+                                end
                             end
+                        end
+                    end
+                end
+                if not DEPUG then
+                    for i_, v_ in ipairs(Game.Board.LightPieces) do
+                        if v_ == startSquare then
+                            table.remove(Game.Board.LightPieces, i_)
+                        end
+                        if v_ == targetSquare then
+                            table.remove(Game.Board.LightPieces, i_)
+                            table.insert(Game.Board.DarkPieces, v)
+                            foundPieces = true
+                            break
+                        end
+                    end
+                    for i_, v_ in ipairs(Game.Board.DarkPieces) do
+                        if v_ == startSquare then
+                            table.remove(Game.Board.DarkPieces, i_)
+                        end
+                        if v_ == targetSquare then
+                            table.remove(Game.Board.DarkPieces, i_)
+                            table.insert(Game.Board.LightPieces, v)
+                            foundPieces = true
                         end
                     end
                 end
@@ -209,10 +275,12 @@ function MakeComputerMove(startSquare, targetSquare)
     if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
         -- Set Castling to false
         if Piece().IsColor(Board.Square[startSquare][1], Piece().White) then
+            Game.Board.kingSquare['w'] = targetSquare
             Game.wqcstl = false
             Game.wkcstl = false
         end
         if Piece().IsColor(Board.Square[startSquare][1], Piece().Black) then
+            Game.Board.kingSquare['b'] = targetSquare
             Game.bqcstl = false
             Game.bkcstl = false
         end

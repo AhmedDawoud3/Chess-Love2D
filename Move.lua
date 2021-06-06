@@ -10,6 +10,7 @@ function Move:init(StartSquare, TargetSquare)
 end
 
 function GenerateMoves(sq)
+
     _moves_ = {}
     local piece = Game.Board.Square[sq][1]
     local pieceType = Piece.PieceType(piece)

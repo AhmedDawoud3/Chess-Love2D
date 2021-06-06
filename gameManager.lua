@@ -1,5 +1,6 @@
 GameManager = Class {}
 time = 0
+
 audio = {
     ["normal"] = love.audio.newSource('audio/normal.wav', "static"),
     ["capture"] = love.audio.newSource('audio/capture.wav', "static"),
@@ -20,20 +21,30 @@ function GameManager:init()
     Game.Board:LoadStartPosition()
     -- Board.Square[16] = {bit.bor(Piece().White, Piece().Knight), true}
     Player = Player()
-    -- print(MoveGenerationTest(1))
-    -- print(MoveGenerationTest(2))
-    -- print(MoveGenerationTest(3))
+    -- for i = 1, 1 do
+    --     local begin = os.clock()
+    --     print("Depth: " .. i .. " ply  " .. "Results : " .. (MoveGenerationTest(i)) .. " Positions  " ..
+    --               string.format("Time: %.2f milliseconds\n", ((os.clock() - begin) * 1000)))
+    -- end
+    -- 1 20 0
+    -- 2 400 0
+    -- 3 8902 0
+    -- 4 197281 11
+    -- 5 4865609 259
+    -- 6 119060324 6502
+
 end
 
 function GameManager:Update(dt)
     time = time + dt
     Player:Update(dt)
-    -- if Game.turn == 'b' and not Game.promotionAvalible then
-    --     ChooseComputerMoves()
-    -- end
+    if Game.turn == 'b' and not Game.promotionAvalible then
+        ChooseComputerMoves()
+    end
     if selectedPieceSquare and currentState == 'DraggingPiece' then
         Game.Board.Square[selectedPieceSquare][2] = false
     end
+    -- print("White Pieces = " .. #Game.Board.LightPieces, "Dark Pieces = " .. #Game.Board.DarkPieces)
 end
 
 function GameManager:Render()
