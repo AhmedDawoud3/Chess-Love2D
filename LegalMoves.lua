@@ -4,10 +4,12 @@ function FilterMoves(moves_, col)
     for i, v in ipairs(moves_) do
         Game.Board:LoadPosition(originalFen)
         TryMakeMove(v.StartSquare, v.TargetSquare, true)
+        -- local begin = os.clock()
         if IsCheck((col == 'w' and Piece().White) or Piece().Black) then
         else
             table.insert(legalMoves, v)
         end
+        -- print("Checked for check in " .. string.format("Time: %.2f milliseconds\n", ((os.clock() - begin) * 1000)))
     end
     Game.Board:LoadPosition(originalFen)
     return legalMoves
@@ -316,7 +318,7 @@ function CreateKingMovement(square, pieceCol)
 
     -- Check Left Castle (-4)
     if not Board.Square[square][3] and IsSquare(square - 4) and not Board.Square[square - 4][3] and
-        Piece.PieceType(Board.Square[square - 4][1]) == Piece().Rook then
+        Piece.PieceType(Board.Square[square - 4][1]) == Piece().Rook and not CurrentlyInCheck(pieceCol) then
         if (Game.wqcstl and Piece().IsColor(Board.Square[square][1], Piece().White)) or
             (Game.bqcstl and Piece().IsColor(Board.Square[square][1], Piece().Black)) then
             if Board.Square[square - 3][1] == 0 and Board.Square[square - 2][1] == 0 and Board.Square[square - 1][1] ==
@@ -328,7 +330,7 @@ function CreateKingMovement(square, pieceCol)
 
     -- Check Right Castling (+3)
     if not Board.Square[square][3] and IsSquare(square + 3) and not Board.Square[square + 3][3] and
-        Piece.PieceType(Board.Square[square + 3][1]) == Piece().Rook then
+        Piece.PieceType(Board.Square[square + 3][1]) == Piece().Rook and not CurrentlyInCheck(pieceCol) then
         if (Game.wkcstl and Piece().IsColor(Board.Square[square][1], Piece().White)) or
             (Game.bkcstl and Piece().IsColor(Board.Square[square][1], Piece().Black)) then
             if Board.Square[square + 2][1] == 0 and Board.Square[square + 1][1] == 0 then
