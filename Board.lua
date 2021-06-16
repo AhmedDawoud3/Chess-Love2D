@@ -27,15 +27,255 @@ function DrawSquare(col, pos)
         squareTileHeight)
     love.graphics.setColor(1, 1, 1, 1)
 end
+
 Board = Class {}
+whiteCastleKingsideMask = 65534
+whiteCastleQueensideMask = 65533
+blackCastleKingsideMask = 65531
+blackCastleQueensideMask = 65527
+
+whiteCastleMask = bit.band(whiteCastleKingsideMask, whiteCastleQueensideMask)
+blackCastleMask = bit.band(blackCastleKingsideMask, blackCastleQueensideMask)
+
 function Board:init()
+
+    self.WhiteIndex = 1
+    self.BlackIndex = 2
+
     self.Square = {}
-    self.LightPieces = {}
-    self.DarkPieces = {}
-    self.kingSquare = {}
     for i = 1, 64 do
         self.Square[i] = {0, false, true}
     end
+
+    self.LightPieces = {}
+    self.DarkPieces = {}
+    self.WhiteToMove = 0
+    self.ColorToMove = 0
+    self.OpponentColor = 0
+    self.ColorToMoveIndex = 0
+
+    self.gameStateHistory = {}
+    self.currentState = nil
+
+    self.plyCount = 0
+    self.fiftyMoveCounter = 0
+
+    self.ZobristKey = nil
+
+    self.RepetitionPositionHistory = {}
+
+    self.KingSquare = CreateTable(2)
+
+    self.rooks = {PieceList(10), PieceList(10)}
+    self.bishops = {PieceList(10), PieceList(10)}
+    self.queens = {PieceList(9), PieceList(9)}
+    self.knights = {PieceList(10), PieceList(10)}
+    self.pawns = {PieceList(8), PieceList(8)}
+    local emptyList = PieceList(0)
+
+    self.alPieceLists = {
+        emptyList,
+        emptyList,
+        self.pawns[self.WhiteIndex],
+        self.knights[self.WhiteIndex],
+        emptyList,
+        self.bishops[self.WhiteIndex],
+        self.rooks[self.WhiteIndex],
+        self.queens[self.WhiteIndex],
+        emptyList,
+        emptyList,
+        self.pawns[self.BlackIndex],
+        self.knights[self.BlackIndex],
+        emptyList,
+        self.bishops[self.BlackIndex],
+        self.rooks[self.BlackIndex],
+        self.queens[self.BlackIndex],
+    }
+
+end
+
+function Board:GetPieceList(pieceType, colorIndex)
+    return self.allPieceList.occupiedSquares[colorIndex * 8 + pieceType]
+end
+
+function Board:MakeMove(move, inSearch)
+    inSearch = inSearch or false
+
+    self.oldEnPassantFile = bit.band(bit.rshift(self.currentState, 4), 15)
+    self.originalCastleState = bit.band(self.currentState, 15)
+    self.newCastleState = self.originalCastleState
+    self.currentState = 0
+
+    self.opponentColorIndex = 1 - self.colorToMoveIndex
+    self.moveFrom = move.StartSquare
+    self.moveTo = move.TargetSquare
+
+    self.capturedPieceType = Piece.PieceType(self.Square[self.moveTo])
+    self.movePiece = self.Square[self.moveFrom]
+    self.movePieceType = Piece.PieceType(self.movePiece)
+
+    self.moveFlag = move:MoveFlag()
+    self.isPromotion = move:IsPromotion()
+    self.isEnPassant = self.moveFlag == Flag.EnPassantCapture
+
+    self.currentGameState = bit.bor(self.currentGameState, bit.lshift(self.capturedPieceType, 8))
+
+    if self.capturedPieceType ~= 0 and not self.isEnPassant then
+        self:GetPieceList(self.capturedPieceType, self.opponentColorIndex):RemovePieceAtSquare(self.moveTo)
+    end
+
+    if self.movePieceType == Piece.King then
+        self.KingSquare[self.colorToMoveIndex] = self.moveTo
+        self.newCastleState = bit.band(self.newCastleState, self.WhiteToMove and whiteCastleMask or blackCastleMask)
+    else
+        GetPieceList(self.movePieceType, self.colorToMoveIndex):MovePiece(self.moveFrom, self.moveTo)
+    end
+
+    self.pieceOnTargetSquare = self.movePiece
+
+    if self.isPromotion then
+        self.promoteType = 0
+        if self.moveFlag == Flag.PromoteToQueen then
+            self.promoteType = Piece.Queen
+            self.queens[self.ColorToMoveIndex]:AddPieceAtSquare(self.moveTo)
+        elseif self.moveFlag == Flag.PromoteToRook then
+            self.promoteType = Piece.Rook
+            self.rooks[self.ColorToMoveIndex]:AddPieceAtSquare(self.moveTo)
+        elseif self.moveFlag == Flag.PromoteToBishop then
+            self.promoteType = Piece.Bishop
+            self.bishops[self.ColorToMoveIndex]:AddPieceAtSquare(self.moveTo)
+        elseif self.moveFlag == Flag.PromoteToKnight then
+            self.promoteType = Piece.Rook
+            self.knights[self.ColorToMoveIndex]:AddPieceAtSquare(self.moveTo)
+        end
+        self.pieceOnTargetSquare = bit.bor(self.promoteType, self.ColorToMove)
+        pawns[self.ColorToMoveIndex]:RemovePieceAtSquare(self.moveTo)
+    else
+        if self.moveFlag == Flag.EnPassantCapture then
+            self.epPawnSquare = self.moveTo + self.ColorToMove == Piece.White and -8 or 8
+            self.currentGameState = bit.bor(self.currentGameState, bit.lshift(self.Square[self.epSquare], 8))
+            self.Square[self.epPawnSquare] = {0, false, true}
+            self.pawns[self.opponentColorIndex]:RemovePieceAtSquare(self.epPawnSquare)
+        elseif self.moveFlag == Flag.Castling then
+            self.kingSide = self.moveTo == BoardRepresentation.g1 or self.moveTo == BoardRepresentation.g8
+            self.castlingRookFromIndex = self.kingSide and self.moveTo + 1 or self.moveTo - 2
+            self.castlingRookToIndex = self.kingSide and self.moveTo - 1 or self.moveTo + 1
+
+            self.Square[self.castlingRookFromIndex] = {0, false, true}
+            self.Square[self.castlingRookToIndex] = {bit.bor(Piece.Rook, self.ColorToMove), true, false}
+
+            self.rooks[self.colorToMoveIndex]:MovePiece(self.castlingRookFromIndex, self.castlingRookToIndex)
+        end
+    end
+
+    self.Square[self.moveTo] = {self.pieceOnTargetSquare, true, true}
+    self.Square[self.moveFrom] = {0, false, true}
+
+    if self.moveFlag == Flag.PawnTwoForward then
+        self.file = FileIndex(self.moveFrom) + 1
+        self.currentGameState = bit.bor(self.currentGameState, bit.lshift(self.file, 4))
+    end
+
+    if self.originalCastleState ~= 0 then
+        if self.moveTo == BoardRepresentation.h1 or self.moveFrom == BoardRepresentation.h1 then
+            self.newCastleState = bit.band(self.newCastleState, self.whiteCastleKingsideMask)
+        elseif self.moveTo == BoardRepresentation.a1 or self.moveFrom == BoardRepresentation.a1 then
+            self.newCastleState = bit.band(self.newCastleState, self.whiteCastleQueensideMask)
+        end
+        if self.moveTo == BoardRepresentation.h8 or self.moveFrom == BoardRepresentation.h8 then
+            self.newCastleState = bit.band(self.newCastleState, self.blackCastleKingsideMask)
+        elseif self.moveTo == BoardRepresentation.a8 or self.moveFrom == BoardRepresentation.a8 then
+            self.newCastleState = bit.band(self.newCastleState, self.blackCastleQueensideMask)
+        end
+    end
+
+    self.currentGameState = bit.bor(self.currentGameState, self.newCastleState)
+    self.currentGameState = bit.lshift(bit.bor(self.currentGameState, self.fiftyCounter), 14)
+
+    table.insert(self.gameStateHistory, self.currentGameState)
+
+    self.WhiteToMove = not self.WhiteToMove
+    self.ColorToMove = self.WhiteToMove and Piece.White or Piece.Black
+    self.OpponentColor = self.WhiteToMove and Piece.Black or Piece.White
+    self.ColorToMoveIndex = 1 - self.colorToMoveIndex
+
+    self.plyCount = self.plyCount + 1
+    self.fiftyCounter = self.fiftyCounter + 1
+end
+
+function Board:UnmakeMove(move, inSearch)
+    inSearch = inSearch or false
+
+    self.opponentColorIndex = self.ColorToMoveIndex
+    self.undoingWhiteMove = self.OpponentColor == Piece.White
+    self.ColorToMove = self.OpponentColor
+    self.OpponentColor = self.undoingWhiteMove and Piece.Black or Piece.White
+    self.ColorToMoveIndex = 1 - self.ColorToMoveIndex
+    self.WhtieToMove = not self.WhtieToMove
+
+    self.originalCastleState = bit.band(self.currentGameState, 15)
+
+    self.capturedPieceType = bit.band(bit.rshift(self.currentGameState, 8), 63)
+    self.capturedPiece = self.capturedPieceType == 0 and 0 or bit.bor(self.capturedPieceType, self.OpponentColor)
+
+    self.movedFrom = move:StartSquare()
+    self.movedTo = move:TargetSquare()
+    self.moveFlags = move:MoveFlag()
+    self.isEnPassant = self.moveFlags == Flags.EnPassantCapture
+    self.isPromotion = move:IsPromotion()
+
+    self.toSquarePieceType = Piece.PieceType(self.Square[self.movedTo][1])
+    self.movedPieceType = self.isPromotion and Piece.Pawn or self.toSquarePieceType
+
+    self.oldEnPassantFile = bit.band(bit.rshift(self.currentGameState, 4), 15)
+
+    if self.capturedPieceType ~= 0 and not self.isEnPassant then
+        self:GetPieceList(self.capturedPieceType, self.opponentColorIndex).AddPieceAtSquare(self.movedTo)
+    end
+
+    if self.movedPieceType == Piece.King then
+        self.KingSquare[colorToMoveIndex] = self.movedFrom
+    elseif not self.isPromotion then
+        self.GetPieceList(self.movedPieceType, self.colorToMoveIndex).MovePiece(self.moveTo, self.moveFrom)
+    end
+
+    self.Square[self.movedFrom] = {bit.bor(self.movedPieceType, self.ColorToMove), true, true}
+    self.Square[self.movedTo] = {self.capturedPiece, true, true}
+
+    if self.isPromotion then
+        self.pawns[self.colorToMoveIndex].AddPieceAtSquare(self.movedFrom)
+        if self.moveFlags == Flag.PromoteToQueen then
+            self.queens[self.colorToMoveIndex].RemovePieceAtSquare(self.movedTo)
+        elseif self.moveFlags == Flag.PromoteToKnight then
+            self.knights[self.colorToMoveIndex].RemovePieceAtSquare(self.movedTo)
+        elseif self.moveFlags == Flag.PromoteToRook then
+            self.rooks[self.colorToMoveIndex].RemovePieceAtSquare(self.movedTo)
+        elseif self.moveFlags == Flag.PromoteToBishop then
+            self.bishops[self.colorToMoveIndex].RemovePieceAtSquare(self.movedTo)
+        end
+    elseif self.isEnPassant then
+        self.epIndex = self.movedTo + ((self.ColorToMove == Piece.White) and -8 or 8)
+        self.Square[self.movedTo] = {0, false, true}
+        self.Square[self.epIndex] = {self.capturedPiece, true, true}
+        self.pawns[self.opponentColorIndex].AddPieceAtSquare(self.epIndex)
+    elseif self.moveFlags == Flag.Castling then
+        self.kingSide = self.movedTo == 7 or self.moveTo == 63
+        self.castlingRookFromIndex = self.kingSide and self.movedTo + 1 or self.moveTo - 2
+        self.castlingRookToIndex = self.kingSide and self.movedTo - 1 or self.movedTo + 1
+
+        self.Square[self.castlingRookToIndex] = {0, false, true}
+        self.Square[self.castlingRookFromIndex] = {bit.bor(Piece.Rook, self.ColorToMove), true, true}
+
+        self.rooks[self.ColorToMove].MovePiece(self.castlingRookToIndex, self.castlingRookFromIndex)
+    end
+    table.remove(self.gameStateHistory, #self.gameStateHistory)
+
+    self.currentGameState = self.gameStateHistory[#self.gameStateHistory]
+
+    self.fiftyCounter = vir.rshift(bit.band(self.currentGameState and 4294950912), 14)
+
+    self.plyCount = self.plyCount - 1
+
 end
 
 function Board:DisplayPieces()
@@ -80,6 +320,12 @@ function Board:DisplayChecks()
     if IsCheck(Piece().White) then
         DrawSquare({0.4, 0.8, 0.2, 0.7}, {FileIndex(IsCheck(Piece().White)[2]), RankIndex(IsCheck(Piece().White)[2])})
     end
+    -- _x__ = GetAllLegalMoves(Piece().Black)
+    -- print(#_x__)
+    -- for _, a in ipairs(_x__) do
+    --     -- DrawSquare({0.4, 0.6, 0.2, 0.7}, {FileIndex(a.TargetSquare), RankIndex(a.TargetSquare)})
+    --     DrawSquare({0.4, 0.2, 0.2, 0.7}, {FileIndex(a.StartSquare), RankIndex(a.StartSquare)})
+    -- end
 end
 
 function Board:GetPiecePromotion()
@@ -219,7 +465,7 @@ function Board:LoadPosition(fen)
     loadedPosition = PositionFromFen(fen)
     Game.Board.LightPieces = {}
     Game.Board.DarkPieces = {}
-    local pec = Piece()
+    local pec = Piece
     local isCLR = pec.IsColor
     local pTYPE = pec.PieceType
     for squareIndex = 1, 64 do
@@ -231,12 +477,12 @@ function Board:LoadPosition(fen)
             if isCLR(piece, pec.White) then
                 table.insert(Game.Board.LightPieces, squareIndex)
                 if pTYPE(piece) == pec.King then
-                    Game.Board.kingSquare['w'] = squareIndex
+                    Game.Board.KingSquare['w'] = squareIndex
                 end
             else
                 table.insert(Game.Board.DarkPieces, squareIndex)
                 if pTYPE(piece) == pec.King then
-                    Game.Board.kingSquare['b'] = squareIndex
+                    Game.Board.KingSquare['b'] = squareIndex
                 end
             end
         end

@@ -21,7 +21,7 @@ function GameManager:init()
     Game.Board:LoadStartPosition()
     -- Board.Square[16] = {bit.bor(Piece().White, Piece().Knight), true}
     Player = Player()
-    -- for i = 1, 1 do
+    -- for i = 1, 3 do
     --     local begin = os.clock()
     --     print("Depth: " .. i .. " ply  " .. "Results : " .. (MoveGenerationTest(i)) .. " Positions  " ..
     --               string.format("Time: %.2f milliseconds\n", ((os.clock() - begin) * 1000)))

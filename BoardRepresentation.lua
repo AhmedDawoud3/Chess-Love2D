@@ -1,6 +1,23 @@
 fileNames = "abcdefgh"
 rankNames = "12345678"
-
+BoardRepresentation = {
+    a1 = 0 + 1,
+    b1 = 1 + 1,
+    c1 = 2 + 1,
+    d1 = 3 + 1,
+    e1 = 4 + 1,
+    f1 = 5 + 1,
+    g1 = 6 + 1,
+    h1 = 7 + 1,
+    a8 = 56 + 1,
+    b8 = 57 + 1,
+    c8 = 58 + 1,
+    d8 = 59 + 1,
+    e8 = 60 + 1,
+    f8 = 61 + 1,
+    g8 = 62 + 1,
+    h8 = 63 + 1
+}
 function SquareToCordinate(square)
     square = square
     -- local file = square % 7
@@ -31,6 +48,14 @@ function DarkSquare(squareIndex)
     return (FileIndex(squareIndex) + RankIndex(squareIndex)) % 2 == 0
 end
 
+function SquareNameFromCordinate(fileIndex, rankIndex)
+    return tostring(fileNames[fileIndex + 1]) .. tostring(rankIndex + 1)
+end
+
+function SquareNameFromIndex(squareIndex)
+    return SquareNameFromCordinate(FileIndex(squareIndex), RankIndex(squareIndex))
+end
+
 function IsClearSquare(squareIndex)
     if IsSquare(squareIndex) then
         if Board.Square[squareIndex][1] == 0 then
@@ -49,21 +74,21 @@ function IsSquare(squareIndex)
 end
 
 function IsCheck(col)
-    local eCol = Piece().ReverseColor(col)
-    local t = (col == Piece().White and 'w') or 'b'
+    local eCol = Piece.ReverseColor(col)
+    local t = (col == Piece.White and 'w') or 'b'
     local changedTurn = false
     local gamTurn = Game.turn
-    local pType = Piece().PieceType
+    local pType = Piece.PieceType
     local pCol = Piece.IsColor
     local gen_moves = GenerateMoves
-    local gmBoard =Game.Board 
+    local gmBoard = Game.Board
 
     for i, v in ipairs(gmBoard.Square) do
         if v[1] ~= 0 then
             if pCol(v[1], eCol) then
                 local aMoves = gen_moves(i)
                 for j, o in ipairs(aMoves) do
-                    if pType(gmBoard.Square[o.TargetSquare][1]) == Piece().King then
+                    if pType(gmBoard.Square[o.TargetSquare][1]) == Piece.King then
                         return {true, o.TargetSquare}
                     end
                 end
@@ -76,7 +101,7 @@ function IsCheck(col)
             if pCol(v[1], eCol) then
                 local aMoves = gen_moves(i)
                 for j, o in ipairs(aMoves) do
-                    if pType(gmBoard.Square[o.TargetSquare][1]) == Piece().King then
+                    if pType(gmBoard.Square[o.TargetSquare][1]) == Piece.King then
                         Game.NextTurn()
                         return {true, o.TargetSquare}
                     end
@@ -90,16 +115,16 @@ function IsCheck(col)
 end
 
 function CurrentlyInCheck(col)
-    local pType = Piece().PieceType
-    local eCol = Piece().ReverseColor(col)
+    local pType = Piece.PieceType
+    local eCol = Piece.ReverseColor(col)
     local pCol = Piece.IsColor
     Game.NextTurn()
     for i, v in ipairs(Game.Board.Square) do
-        if v[1] ~= 0 and pType(v[1]) ~= Piece().King then
+        if v[1] ~= 0 and pType(v[1]) ~= Piece.King then
             if pCol(v[1], eCol) then
                 local aMoves = GenerateMoves(i)
                 for j, o in ipairs(aMoves) do
-                    if pType(Game.Board.Square[o.TargetSquare][1]) == Piece().King then
+                    if pType(Game.Board.Square[o.TargetSquare][1]) == Piece.King then
                         Game.NextTurn()
                         return {true, o.TargetSquare}
                     end

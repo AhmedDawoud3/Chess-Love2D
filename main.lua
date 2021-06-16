@@ -1,4 +1,6 @@
 Class = require "utils/class"
+require 'utils/stack'
+require 'helper'
 require "Board"
 require "piece"
 require 'loader'
@@ -11,9 +13,14 @@ require 'LegalMoves'
 require 'Move'
 require 'PlayerContrals'
 require 'ComputerMoves'
+require 'PieceList'
 require "AI/Evaluation"
 require "AI/Search"
 bit = require "bit"
+-- x = PieceList(10)
+-- x:AddPieceAtSquare(10)
+-- x:RemovePieceAtSquare(10)
+-- print(x[1])
 WIDTH = 1280
 HEIGHT = 960
 function love.load()

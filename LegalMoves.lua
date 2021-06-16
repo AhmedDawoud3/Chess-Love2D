@@ -3,7 +3,7 @@ function FilterMoves(moves_, col)
     local legalMoves = {}
     local trimkmove = TryMakeMove
     local gmBoard = Game.Board
-    local pec = Piece()
+    local pec = Piece
     for i, v in ipairs(moves_) do
         local begin = os.clock()
         gmBoard:LoadPosition(originalFen)
@@ -21,7 +21,7 @@ end
 
 function GetAllMoves(col)
     local allMoves = {}
-    local isCLR = Piece().IsColor
+    local isCLR = Piece.IsColor
     local genMoves = GenerateMoves
     for i, v in ipairs(Game.Board.Square) do
         local sq = v[1]
@@ -61,7 +61,7 @@ end
 function CreatePawnMovement(square, pieceCol)
     local moves_ = {}
     local _moves_ = {}
-    local index = (((pieceCol == Piece().White) and 1) or -1)
+    local index = (((pieceCol == Piece.White) and 1) or -1)
     if RankIndex(square) >= 0 and RankIndex(square) < 7 then
         if IsClearSquare(square + 8 * index) then
             if RankIndex(square) + 2.5 * -index == 3.5 then
@@ -107,18 +107,18 @@ end
 
 function GenerateSlidingMove(startSquare, piece)
     local moves_ = {}
-    startDirIndex = ((Piece().PieceType(piece) == Piece().Bishop) and 5) or 1
-    endDirIndex = ((Piece().PieceType(piece) == Piece().Rook) and 5) or 9
+    startDirIndex = ((Piece.PieceType(piece) == Piece.Bishop) and 5) or 1
+    endDirIndex = ((Piece.PieceType(piece) == Piece.Rook) and 5) or 9
     for directionIndex = startDirIndex, 7 do
         for n = endDirIndex, NumSquaresToEdge[startSquare][directionIndex] do
             local targetSquare = startSquare + DirectionOffsets[directionIndex] * (n + 1)
             pieceOnTargetSquare = Board.Square[targetSquare]
 
-            if (Piece().IsColor(pieceOnTargetSquare, Piece().White)) then
+            if (Piece.IsColor(pieceOnTargetSquare, Piece.White)) then
                 break
             end
             table.insert(moves_, Move(startSquare, targetSquare))
-            if (Piece().IsColor(pieceOnTargetSquare, Piece().Black)) then
+            if (Piece.IsColor(pieceOnTargetSquare, Piece.Black)) then
                 break
             end
         end
@@ -142,7 +142,7 @@ function CreateKnightMovement(square, pieceCol)
             local sqX1, sqY1 = SquareToCordinate(v.TargetSquare)
             local sqX2, sqY2 = SquareToCordinate(v.StartSquare)
             if Dist(sqX1, sqY1, sqX2, sqY2) < 400 then
-                if not Piece().IsColor(Board.Square[v.TargetSquare][1], pieceCol) then
+                if not Piece.IsColor(Board.Square[v.TargetSquare][1], pieceCol) then
                     table.insert(_moves_, v)
                 end
             end
@@ -202,11 +202,11 @@ function CreateRookMovement(square, pieceCol)
         for k = 1, 7 do
             local sq = square + i * k
             if RankIndex(sq) == pRank and IsSquare(sq) then
-                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+                if Piece.IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
                     break
                 end
                 table.insert(moves_, Move(square, sq))
-                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                if Piece.IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
                     break
                 end
             end
@@ -214,11 +214,11 @@ function CreateRookMovement(square, pieceCol)
         for k = 1, 7 do
             local sq = square + i * (k * 8)
             if FileIndex(sq) == pFile and IsSquare(sq) then
-                if Piece().IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
+                if Piece.IsColor(Board.Square[sq][1], pieceCol) and IsPiece(sq) then
                     break
                 end
                 table.insert(moves_, Move(square, sq))
-                if Piece().IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
+                if Piece.IsColor(Board.Square[sq][1], Piece.ReverseColor(pieceCol)) and IsPiece(sq) then
                     break
                 end
             end
@@ -234,8 +234,8 @@ function CreateQueenMovement(square, pieceCol)
     local pRank = RankIndex(square)
     local pFile = FileIndex(square)
 
-    local isCLR = Piece().IsColor
-    local SameColor = Piece().SameColor
+    local isCLR = Piece.IsColor
+    local SameColor = Piece.SameColor
     local CLRSQR = IsClearSquare
     local isSQR = IsSquare
 
@@ -319,7 +319,7 @@ function CreateKingMovement(square, pieceCol)
         for k, v in ipairs(moves_) do
             local sq = square + v * i
             if IsSquare(sq) and DistanceBetweenSquares(sq, square, 200) then
-                if not Piece().IsColor(Board.Square[sq][1], pieceCol) then
+                if not Piece.IsColor(Board.Square[sq][1], pieceCol) then
                     table.insert(_moves_, Move(square, sq))
                 end
             end
@@ -328,9 +328,9 @@ function CreateKingMovement(square, pieceCol)
 
     -- Check Left Castle (-4)
     if not Board.Square[square][3] and IsSquare(square - 4) and not Board.Square[square - 4][3] and
-        Piece.PieceType(Board.Square[square - 4][1]) == Piece().Rook and not CurrentlyInCheck(pieceCol) then
-        if (Game.wqcstl and pieceCol ==  Piece().White) or
-            (Game.bqcstl and pieceCol ==  Piece().Black) then
+        Piece.PieceType(Board.Square[square - 4][1]) == Piece.Rook and not CurrentlyInCheck(pieceCol) then
+        if (Game.wqcstl and pieceCol ==  Piece.White) or
+            (Game.bqcstl and pieceCol ==  Piece.Black) then
             if Board.Square[square - 3][1] == 0 and Board.Square[square - 2][1] == 0 and Board.Square[square - 1][1] ==
                 0 then
                 table.insert(_moves_, Move(square, square - 2))
@@ -340,9 +340,9 @@ function CreateKingMovement(square, pieceCol)
 
     -- Check Right Castling (+3)
     if not Board.Square[square][3] and IsSquare(square + 3) and not Board.Square[square + 3][3] and
-        Piece.PieceType(Board.Square[square + 3][1]) == Piece().Rook and not CurrentlyInCheck(pieceCol) then
-        if (Game.wkcstl and pieceCol ==  Piece().White) or
-            (Game.bkcstl and pieceCol ==  Piece().Black) then
+        Piece.PieceType(Board.Square[square + 3][1]) == Piece.Rook and not CurrentlyInCheck(pieceCol) then
+        if (Game.wkcstl and pieceCol ==  Piece.White) or
+            (Game.bkcstl and pieceCol ==  Piece.Black) then
             if Board.Square[square + 2][1] == 0 and Board.Square[square + 1][1] == 0 then
                 table.insert(_moves_, Move(square, square + 2))
             end

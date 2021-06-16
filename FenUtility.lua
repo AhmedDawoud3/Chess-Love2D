@@ -3,7 +3,7 @@
 startFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
 function PositionFromFen(fen)
-    local pec = Piece()
+    local pec = Piece
     loadedPositionInfo = LoadedPositionInfo()
     pieceTypeFromSymbol = {
         ['k'] = pec.King,

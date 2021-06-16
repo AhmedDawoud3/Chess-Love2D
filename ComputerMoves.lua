@@ -4,7 +4,9 @@ function ChooseComputerMoves()
     -- local allMoves = GetAllLegalMoves(((Game.turn == 'w') and Piece().White) or Piece().Black)
     -- if #allMoves > 0 then
     -- local RandomMove = math.random(1, #allMoves)
-    searchedMove = Search(2)[2]
+    local begin = os.clock()
+    searchedMove = Search(1, -100000000000, 100000000000, false)[2]
+    print("Search " ..string.format("Time: %.2f milliseconds\n", ((os.clock() - begin) * 1000)))
     if searchedMove then
         MakeComputerMove(searchedMove.StartSquare, searchedMove.TargetSquare)
     end
@@ -15,9 +17,7 @@ function MoveGenerationTest(depth)
     if depth == 0 then
         return 1
     end
-    local begin = os.clock()
     moves = GetAllLegalMoves(((Game.turn == 'w') and Piece().White) or Piece().Black)
-    -- print("Legal Moves in " ..string.format("Time: %.2f milliseconds\n", ((os.clock() - begin) * 1000)))
     numPositions = 0
     local mkMove = MakeComputerMove
     local undoMV = UndoMove

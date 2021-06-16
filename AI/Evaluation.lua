@@ -4,16 +4,16 @@ local bishopValue = 320
 local rookValue = 500
 local queenValue = 900
 local endgameMaterialStart = rookValue * 2 + bishopValue + knightValue;
-
+local pec = Piece
 function Evaluate()
     whiteEval = 0
     blackEval = 0
 
-    whiteMaterial = CountMaterial(Piece().White)[1]
-    blackMaterial = CountMaterial(Piece().Black)[1]
+    whiteMaterial = CountMaterial(pec.White)[1]
+    blackMaterial = CountMaterial(pec.Black)[1]
 
-    -- whiteMaterialWithoutPawns = whiteMaterial - CountMaterial(Piece().White)[2]
-    -- blackMaterialWithoutPawns = blackMaterial - CountMaterial(Piece().Black)[2]
+    -- whiteMaterialWithoutPawns = whiteMaterial - CountMaterial(pec.White)[2]
+    -- blackMaterialWithoutPawns = blackMaterial - CountMaterial(pec.Black)[2]
 
     -- whiteEndgamePhaseWeight = EndgamePhaseWeight(whiteMaterialWithoutPawns)
     -- blackEndgamePhaseWeight = EndgamePhaseWeight(blackMaterialWithoutPawns)
@@ -21,11 +21,18 @@ function Evaluate()
     whiteEval = whiteEval + whiteMaterial
     blackEval = blackEval + blackMaterial
 
+    if IsCheck(pec.White) then
+        whiteEval = whiteEval - 400
+    end
+    if IsCheck(pec.Black) then
+        blackEval = blackEval - 400
+    end
+
     eval = whiteEval - blackEval
 
     perspective = Game.turn == 'w' and 1 or -1
 
-    return eval  / 100
+    return eval / 100
 end
 
 function EndgamePhaseWeight(materialCountWithoutPawns)
@@ -45,10 +52,10 @@ end
 function CountMaterial(col)
     local material = 0
     local pawnMaterial = 0
-    local pec = Piece()
+    local pec = pec
     local pType = pec.PieceType
     local gmBoard = Game.Board.Square
-    local isCLR = Piece().IsColor
+    local isCLR = pec.IsColor
     for i, v in ipairs(Game.Board.Square) do
         if isCLR(v[1], col) then
             if pType(v[1]) == pec.Pawn then
@@ -62,6 +69,8 @@ function CountMaterial(col)
                 material = material + rookValue
             elseif pType(v[1]) == pec.Queen then
                 material = material + queenValue
+            elseif pType(v[1]) == pec.King then
+                material = material + 100000
             end
         end
     end

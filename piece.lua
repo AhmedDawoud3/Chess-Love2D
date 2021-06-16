@@ -3,6 +3,18 @@ Piece = Class {}
 whiteMask = 8
 blackMask = 16
 colorMask = bit.bor(whiteMask, blackMask)
+Piece = {
+    None = 0,
+    King = 1,
+    Pawn = 2,
+    Knight = 3,
+    Bishop = 4,
+    Rook = 5,
+    Queen = 6,
+
+    White = 8,
+    Black = 16
+}
 function Piece:init()
     self.None = 0
     self.King = 1
@@ -20,6 +32,10 @@ function Piece.IsColor(piece, color)
     return bit.band(piece, colorMask) == color
 end
 
+function Piece.Color(piece)
+    return bit.band(piece, colorMask)
+end
+
 function Piece.IsSlidingPiece(piece)
     return (bit.band(piece, 4) ~= 0)
 end
@@ -32,7 +48,7 @@ function Piece.SameColor(square1, square2)
     piece1 = Board.Square[square1][1]
     piece2 = Board.Square[square2][1]
     if piece1 ~= 0 and piece2 ~= 0 then
-        return (Piece.IsColor(piece1, Piece().White) == Piece.IsColor(piece2, Piece().White))
+        return (Piece.IsColor(piece1, Piece.White) == Piece.IsColor(piece2, Piece.White))
     end
     return false
 end
@@ -47,10 +63,10 @@ function IsPiece(squareIndex)
 end
 
 function Piece.ReverseColor(color)
-    if color == Piece().White then
-        return Piece().Black
+    if color == Piece.White then
+        return Piece.Black
     end
-    return Piece().White
+    return Piece.White
 end
 
 function Piece.Promote(promotion)

@@ -91,12 +91,12 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                 if Piece().PieceType(Board.Square[startSquare][1]) == Piece().King then
                     -- Set Castling to false
                     if Piece().IsColor(Board.Square[startSquare][1], Piece().White) then
-                        Game.Board.kingSquare['w'] = targetSquare
+                        Game.Board.KingSquare['w'] = targetSquare
                         Game.wqcstl = false
                         Game.wkcstl = false
                     end
                     if Piece().IsColor(Board.Square[startSquare][1], Piece().Black) then
-                        Game.Board.kingSquare['b'] = targetSquare
+                        Game.Board.KingSquare['b'] = targetSquare
                         Game.bqcstl = false
                         Game.bkcstl = false
                     end
@@ -105,7 +105,8 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                     if (startSquare - targetSquare) > 1 then
                         if Piece.PieceType(Board.Square[startSquare - 4][1]) == Piece().Rook and
                             not Board.Square[startSquare - 4][3] and not Board.Square[startSquare][3] then
-                            if RankIndex(targetSquare) == 0 or RankIndex(targetSquare) == 7 then
+                            if RankIndex(targetSquare) == RankIndex(startSquare) == 0 or RankIndex(targetSquare) ==
+                                RankIndex(startSquare) == 7 then
                                 foundPieces = false
                                 for i_, v_ in ipairs(Game.Board.LightPieces) do
                                     if v_ == startSquare - 4 then
@@ -136,7 +137,8 @@ function TryMakeMove(startSquare, targetSquare, DEPUG)
                     if (targetSquare - startSquare) > 1 then
                         if Piece.PieceType(Board.Square[startSquare + 3][1]) == Piece().Rook and
                             not Board.Square[startSquare + 3][3] and not Board.Square[startSquare][3] then
-                            if RankIndex(targetSquare) == 0 or RankIndex(targetSquare) == 7 then
+                            if RankIndex(targetSquare) == RankIndex(startSquare) == 0 or RankIndex(targetSquare) ==
+                                RankIndex(startSquare) == 7 then
                                 if not DEPUG then
                                     foundPieces = false
                                     for i_, v_ in ipairs(Game.Board.LightPieces) do
@@ -312,10 +314,6 @@ function MakeComputerMove(startSquare, targetSquare)
     Board.Square[targetSquare][2] = true
     Board.Square[startSquare] = {0, false, false}
     Board.Square[targetSquare][3] = true
-    if not DEPUG then
-        table.insert(oldMoves, Move(startSquare, targetSquare))
-        table.insert(moveHistory, CurrentFEN(Game.Board))
-    end
     Game:NextTurn()
     Game.fiftyCounter = Game.fiftyCounter + 1
 
